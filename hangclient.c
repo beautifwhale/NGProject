@@ -20,7 +20,7 @@
 
  	/* Get server name from the command line.  If none, use 'localhost' */
 
- 	server_name = (argc > 1)?  argv [1]: "localhost";
+ 	server_name = (argc = 1)?  argv [1]: "localhost";
 
  	/* Create the socket */
  	sock = socket (AF_INET, SOCK_STREAM, 0);
