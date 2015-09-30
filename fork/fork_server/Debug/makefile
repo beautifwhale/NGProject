@@ -22,19 +22,19 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: client
+all: fork_server
 
 # Tool invocations
-client: $(OBJS) $(USER_OBJS)
+fork_server: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc  -o "client" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc  -o "fork_server" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) client
+	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) fork_server
 	-@echo ' '
 
 .PHONY: all clean dependents
