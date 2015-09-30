@@ -18,7 +18,7 @@
  	 char o_line[LINESIZE];
  	char * server_name;
 
- 	/* Get server name from the command line.  If none, use 'localhost' */
+ 	/* Get server name from the command line.  If none, use 'localhost'*/
 
  	server_name = (argc = 1)?  argv [1]: "localhost";
 
