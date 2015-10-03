@@ -27,14 +27,14 @@ all: fork_client
 # Tool invocations
 fork_client: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
-	@echo 'Invoking: MacOS X C Linker'
+	@echo 'Invoking: GCC C Linker'
 	gcc  -o "fork_client" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) fork_client
+	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) fork_client
 	-@echo ' '
 
 .PHONY: all clean dependents
