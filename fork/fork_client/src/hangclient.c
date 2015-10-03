@@ -7,7 +7,7 @@
 #include <netdb.h>
 
 # define LINESIZE 80
-# define HANGMAN_TCP_PORT 1066
+# define HANGMAN_TCP_PORT 1070
 
 int main(int argc, char * argv[]) {
 	struct sockaddr_in server; /* Server's address assembled here */

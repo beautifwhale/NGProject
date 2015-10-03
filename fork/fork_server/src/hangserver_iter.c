@@ -17,7 +17,7 @@ char *word[] = {
 		};
 # define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))
 # define MAXLEN 80 /* Maximum size in the world of Any string */
-# define HANGMAN_TCP_PORT 1068
+# define HANGMAN_TCP_PORT 1070
 
 main() {
 	int sock, fd, client_len;
