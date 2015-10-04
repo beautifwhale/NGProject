@@ -8,6 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/subdir.mk
 -include subdir.mk
 -include objects.mk
 
@@ -34,7 +35,7 @@ fork_server: $(OBJS) $(USER_OBJS)
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) fork_server
+	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) fork_server
 	-@echo ' '
 
 .PHONY: all clean dependents
