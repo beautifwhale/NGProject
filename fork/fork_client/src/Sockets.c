@@ -4,6 +4,9 @@
  *  Created on: 4 Oct 2015
  *      Author: david
  */
+
+#include <string.h> // memcpy()
+#include <unistd.h> // read(), write()
 #include "../includes/Sockets.h"
 
 int Socket(int family, int type, int protocol)
@@ -19,21 +22,22 @@ int Socket(int family, int type, int protocol)
 
 void Address(int family, struct Address* address, char* ipAddress, int portNumber)
 {
+	printf("Address being created");
 	// create the server address
-	address->host_info = gethostbyname(ipAddress);
-	if (address->host_info == NULL)
+	address->m_sHost_info = gethostbyname(ipAddress);
+	if (address->m_sHost_info == NULL)
 	{
 		fprintf(stderr, "unknown host:%s \n", ipAddress);
 		exit(2);
 	}
 
 	//
-	address->server.sin_family = address->host_info->h_addrtype; // set protocol family
+	address->m_sServerAddress.sin_family = address->m_sHost_info->h_addrtype; // set protocol family
 
 	// address struct, network address from host_info, size of host_info
-	memcpy((char *) &address->server.sin_addr, address->host_info->h_addr, address->host_info->h_length);
+	memcpy((char *) &address->m_sServerAddress.sin_addr, address->m_sHost_info->h_addr, address->m_sHost_info->h_length);
 
-	address->server.sin_port = htons(portNumber); // set server port number
+	address->m_sServerAddress.sin_port = htons(portNumber); // set server port number
 }
 
 void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize)

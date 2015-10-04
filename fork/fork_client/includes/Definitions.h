@@ -10,6 +10,5 @@
 
 #define LINESIZE 80
 #define HANGMAN_TCP_PORT 1070
-#define MAX_BUF_SIZE 4096
 
 #endif /* INCLUDES_DEFINITIONS_H_ */

@@ -5,13 +5,12 @@
  *      Author: david
  */
 
-#include <stdio.h>
 #include "../includes/Sockets.h"
-#include "../includes/Definitions.h"
 #include "../includes/Game.h"
 
 void StartGame(FILE* fp, int socketFileDescriptor)
 {
+	printf("Game started");
 	int maxFileDescriptorsPlus1;
 	int stdinEOF = 0;
 	fd_set readFileDescriptorSet;
@@ -35,7 +34,7 @@ void StartGame(FILE* fp, int socketFileDescriptor)
 		// find the highest index for the readset
 		maxFileDescriptorsPlus1 = Max(fileno(fp), socketFileDescriptor) + 1;
 
-		// call the select function to check each file descriptor
+		// call the select function to check each file descriptor for activity
 		Select(maxFileDescriptorsPlus1, &readFileDescriptorSet, NULL, NULL, NULL);
 
 		// socket file descriptor is active
@@ -44,15 +43,16 @@ void StartGame(FILE* fp, int socketFileDescriptor)
 			numberOfBytesReceived = Read(socketFileDescriptor, buffer, MAX_BUF_SIZE);
 			if( numberOfBytesReceived == 0 )
 			{
-				// connection to the server was terminated normally
-				if( stdinEOF == 1)
+				if( stdinEOF == 1 )
 				{
+					// Client has shutdown the connection
 					return;
 				}
 				else
 				{
-					perror("Server termination:");
-					exit(1);
+					// server has terminated the connection
+					perror("Server terminated");
+					exit(0);
 				}
 			}
 
@@ -64,9 +64,12 @@ void StartGame(FILE* fp, int socketFileDescriptor)
 		if( FD_ISSET(fileno(fp), &readFileDescriptorSet) )
 		{
 			numberOfBytesReceived = Read(fileno(fp), buffer, MAX_BUF_SIZE);
+
+			// if the client is terminated the socket is shutdown
 			if( numberOfBytesReceived == 0 )
 			{
-				stdinEOF = -1;
+				printf("Client has terminated the connection");
+				stdinEOF = 1;
 				Shutdown(socketFileDescriptor, SHUT_WR);
 				FD_CLR(fileno(fp), &readFileDescriptorSet);
 				continue;

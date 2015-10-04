@@ -8,16 +8,18 @@
 #ifndef INCLUDES_SOCKETS_H_
 #define INCLUDES_SOCKETS_H_
 
-
-#include <stdio.h>
+#include <stdio.h> // perror()
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <stdlib.h> // exit(),
+
+#define MAX_BUF_SIZE 4096
 
 struct Address{
-	struct sockaddr_in server; /* Server's address assembled here */
-	struct hostent * host_info;
+	struct sockaddr_in m_sServerAddress; /* Server's address assembled here */
+	struct hostent * m_sHost_info;
 };
 
 int Socket(int family, int type, int protocol);

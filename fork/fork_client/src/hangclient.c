@@ -1,36 +1,32 @@
-/* Hangclient.c - Client for hangman server.  */
+/*
+ * Hangclient.c - Client for hangman server.
+ *
+ * @author	David Morton, add names here...
+ * @date	4.10.2015
+*/
 #include "../includes/Definitions.h"
 #include "../includes/Sockets.h"
+#include "../includes/Game.h"
 
 int main(int argc, char * argv[]) {
-	int sock, count;
-	char i_line[LINESIZE];
-	char o_line[LINESIZE];
-	char * server_name;
+	int iSocketFileDescriptor;
+	char * strServerIPAddress;
+	struct Address sAddress;
 
-	server_name = (argc == 1) ? argv[1] : "localhost";
+	strServerIPAddress = (argc == 1) ? argv[1] : "localhost";
 
-	sock = Socket(AF_INET, SOCK_STREAM, 0);
+	iSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
 
-	struct Address address;
-	Address(AF_INET, (struct Address*) &address, server_name, HANGMAN_TCP_PORT);
+	Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 
-	Connect(sock, (struct sockaddr *) &address.server, sizeof(address.server));
+	Connect(iSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sServerAddress, sizeof(sAddress.m_sServerAddress));
 
 	/*OK connected to the server.
 	 Take a line from the server and show it, take a line and send the user input to the server.
 	 Repeat until the server terminates the connection. */
 
-	StartGame(stdin, sock);
+	StartGame(stdin, iSocketFileDescriptor);
 
-	printf("Connected to server %s \n", server_name);
-	while ((count = read(sock, i_line, LINESIZE)) > 0) {
-		write(1, i_line, count);
-		printf("reading from socket...\n");
-		count = read(0, o_line, LINESIZE); //0 = STDIN
-		write(sock, o_line, count);
-	}
-
-	printf("Client: game over");
+	printf("Game over");
 	return 0;
 }
