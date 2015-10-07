@@ -5,17 +5,14 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/Game.c \
-../src/Sockets.c \
 ../src/hangserver_iter.c 
 
 OBJS += \
 ./src/Game.o \
-./src/Sockets.o \
 ./src/hangserver_iter.o 
 
 C_DEPS += \
 ./src/Game.d \
-./src/Sockets.d \
 ./src/hangserver_iter.d 
 
 

@@ -2,7 +2,7 @@
 /* File: hangserver.c */
 
 #include "../includes/Definitions.h"
-#include "../includes/Sockets.h"
+#include "../../../libsocket/Sockets.h"
 #include "../includes/Game.h"
 
 int main(int argc, char* argv[]) {
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 		if( (childProcessID = fork()) == 0)
 		{
 			// CHILD
-			printf("child %d created\n", childProcessID);
+			//printf("child %d created\n", childProcessID);
 
 			// close the parents listen file descriptor in the child
 			close(iListenSocketFileDescriptor);

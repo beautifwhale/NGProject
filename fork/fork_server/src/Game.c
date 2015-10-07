@@ -6,10 +6,11 @@
  */
 
 #include "../includes/Definitions.h"
-#include "../includes/Sockets.h"
 #include "../includes/Game.h"
 #include <syslog.h> // syslog()
 #include <string.h> // strlen()
+#include <unistd.h> // gethostname(), write()
+#include <stdlib.h>
 
 char *word[] = {
 # include "../words"
