@@ -7,46 +7,62 @@
 
 
 int main(int argc, char* argv[]) {
-	int iSocketFileDescriptor;
+	int iListenSocketFileDescriptor;
 	char * strServerIPAddress;
-	struct Address sAddress;
-
-	int fd;
+	struct Address sClientAddress;
+	pid_t childProcessID;
+	int connfd;
 	int client_len;
-
-	struct sockaddr_in client;
 
 	strServerIPAddress = "0.0.0.0";
 
-	iSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
+	printf("Server: initialising\n");
 
-	Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
+	iListenSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
+
+	Address(AF_INET, (struct Address*) &sClientAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 
 
 	//Bind();
 	//Listen();
 	//Accept();
 
-	if (bind(iSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress)) < 0) {
+	if (bind(iListenSocketFileDescriptor, (struct sockaddr *) &sClientAddress.m_sAddress, sizeof(sClientAddress.m_sAddress)) < 0) {
 		perror("binding socket");
 		exit(2);
 	}
 
-	listen(iSocketFileDescriptor, 5);
+	listen(iListenSocketFileDescriptor, 5);
 
-	//Signal();
+	// signal handler for terminated processes
+	Signal(SIGCHLD, signalHandler);
+	//signal(SIGCHLD, signalHandler);
 
-	while (1) {
-		client_len = sizeof(client);
-		if ((fd = accept(iSocketFileDescriptor, (struct sockaddr *) &client, &client_len)) < 0) {
-			perror("accepting connection");
-			exit(3);
+	printf("listening for connections\n");
+	for( ; ; ) {
+		client_len = sizeof(sClientAddress.m_sAddress);
+		if ((connfd = accept(iListenSocketFileDescriptor, (struct sockaddr *) &sClientAddress.m_sAddress, &client_len)) < 0) {
+			if( errno == EINTR )
+			{
+				// try another accept
+				continue;
+			}
+			else
+			{
+				perror("accept error");
+				exit(3);
+			}
 		}
 
-		/* ---------------- Play_hangman () ---------------------*/
-		play_hangman(fd, fd);
-
-		close(fd);
+		if( (childProcessID = fork()) == 0)
+		{
+			printf("child created\n");
+			close(iListenSocketFileDescriptor);
+			/* ---------------- Play_hangman () ---------------------*/
+			play_hangman(connfd, connfd);
+			exit(0);
+		}
+		close(connfd);
 	}
 	return 0;
 }

@@ -34,7 +34,7 @@ select_client: $(OBJS) $(USER_OBJS)
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) select_client
+	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) select_client
 	-@echo ' '
 
 .PHONY: all clean dependents
