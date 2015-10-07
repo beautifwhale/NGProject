@@ -2,36 +2,43 @@
 /* File: hangserver.c */
 
 #include "../includes/Definitions.h"
+#include "../includes/Sockets.h"
 #include "../includes/Game.h"
 
 extern time_t time();
 
 int main(int argc, char* argv[]) {
-	int sock, fd, client_len;
-	struct sockaddr_in server, client;
+	int iSocketFileDescriptor;
+	char * strServerIPAddress;
+	struct Address sAddress;
+
+	int fd;
+	int client_len;
+
+	struct sockaddr_in client;
+
+	strServerIPAddress = "0.0.0.0"; //
 
 	srand((int) time((long *) 0)); /* randomize the seed */
 
-	sock = socket(AF_INET, SOCK_STREAM, 0); //0 or IPPROTO_TCP
-	if (sock < 0) { //This error checking is the code Stevens wraps in his Socket Function etc
-		perror("creating stream socket");
-		exit(1);
-	}
+	iSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
 
-	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = htonl(INADDR_ANY);
-	server.sin_port = htons(HANGMAN_TCP_PORT);
+	Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 
-	if (bind(sock, (struct sockaddr *) &server, sizeof(server)) < 0) {
+	//server.sin_family = AF_INET;
+	//sAddress.m_sAddress.sin_addr.s_addr = htonl(INADDR_ANY); // for servers listen on 0.0.0.0
+	//server.sin_port = htons(HANGMAN_TCP_PORT);
+
+	if (bind(iSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress)) < 0) {
 		perror("binding socket");
 		exit(2);
 	}
 
-	listen(sock, 5);
+	listen(iSocketFileDescriptor, 5);
 
 	while (1) {
 		client_len = sizeof(client);
-		if ((fd = accept(sock, (struct sockaddr *) &client, &client_len)) < 0) {
+		if ((fd = accept(iSocketFileDescriptor, (struct sockaddr *) &client, &client_len)) < 0) {
 			perror("accepting connection");
 			exit(3);
 		}
