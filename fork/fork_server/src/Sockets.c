@@ -6,7 +6,8 @@
  */
 
 #include <string.h> // memcpy()
-#include <unistd.h> // read(), write()
+#include <signal.h> // SIGCHLD
+
 #include "../includes/Sockets.h"
 
 int Socket(int family, int type, int protocol)

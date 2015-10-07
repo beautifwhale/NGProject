@@ -6,7 +6,8 @@
  */
 
 #include <string.h> // memcpy()
-#include <unistd.h> // read(), write()
+#include <signal.h> // SIGCHLD
+
 #include "../includes/Sockets.h"
 
 int Socket(int family, int type, int protocol)
@@ -22,7 +23,7 @@ int Socket(int family, int type, int protocol)
 
 void Address(int family, struct Address* address, char* ipAddress, int portNumber)
 {
-	printf("Address being created");
+	printf("Address being created\n");
 	// create the server address
 	address->m_sHost_info = gethostbyname(ipAddress);
 	if (address->m_sHost_info == NULL)
@@ -32,12 +33,12 @@ void Address(int family, struct Address* address, char* ipAddress, int portNumbe
 	}
 
 	//
-	address->m_sServerAddress.sin_family = address->m_sHost_info->h_addrtype; // set protocol family
+	address->m_sAddress.sin_family = address->m_sHost_info->h_addrtype; // set protocol family
 
 	// address struct, network address from host_info, size of host_info
-	memcpy((char *) &address->m_sServerAddress.sin_addr, address->m_sHost_info->h_addr, address->m_sHost_info->h_length);
+	memcpy((char *) &address->m_sAddress.sin_addr, address->m_sHost_info->h_addr, address->m_sHost_info->h_length);
 
-	address->m_sServerAddress.sin_port = htons(portNumber); // set server port number
+	address->m_sAddress.sin_port = htons(portNumber); // set server port number
 }
 
 void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize)
@@ -92,5 +93,22 @@ void Shutdown(int fileDescriptor, int shutdownOption)
 int Max(int x, int y)
 {
 	return ( x < y ) ? y : x;
+}
+
+void Signal(int signalNumber, void* signalHandler)
+{
+	signal(SIGCHLD, signalHandler);
+}
+
+void signalHandler(int signalNumber)
+{
+	pid_t processID;
+	int stat;
+
+	while( (processID = waitpid(-1, &stat, WNOHANG)) > 0)
+	{
+		printf("child %d terminated\n", processID);
+	}
+	return;
 }
 

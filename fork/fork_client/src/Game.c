@@ -10,7 +10,6 @@
 
 void StartGame(FILE* fp, int socketFileDescriptor)
 {
-	printf("Game started");
 	int maxFileDescriptorsPlus1;
 	int stdinEOF = 0;
 	fd_set readFileDescriptorSet;

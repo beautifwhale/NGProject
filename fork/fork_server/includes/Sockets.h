@@ -14,8 +14,10 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <stdlib.h> // exit(),
+#include <unistd.h> // read(), write(), fork()
 
 #define MAX_BUF_SIZE 4096
+#define MAX_LISTEN_QUEUE_SIZE 1024
 
 struct Address{
 	struct sockaddr_in m_sAddress; /* Server's address assembled here */

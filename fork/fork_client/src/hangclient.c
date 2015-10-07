@@ -19,7 +19,7 @@ int main(int argc, char * argv[]) {
 
 	Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 
-	Connect(iSocketFileDescriptor, (struct sockaddr*) &sAddress.m_sServerAddress, sizeof(sAddress.m_sServerAddress));
+	Connect(iSocketFileDescriptor, (struct sockaddr*) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
 	/*OK connected to the server.
 	 Take a line from the server and show it, take a line and send the user input to the server.

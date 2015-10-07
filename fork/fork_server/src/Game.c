@@ -8,7 +8,8 @@
 #include "../includes/Definitions.h"
 #include "../includes/Sockets.h"
 #include "../includes/Game.h"
-#include <syslog.h>
+#include <syslog.h> // syslog()
+#include <string.h> // strlen()
 
 char *word[] = {
 # include "../words"

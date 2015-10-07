@@ -14,11 +14,13 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <stdlib.h> // exit(),
+#include <unistd.h> // read(), write(), fork()
 
 #define MAX_BUF_SIZE 4096
+#define MAX_LISTEN_QUEUE_SIZE 1024
 
 struct Address{
-	struct sockaddr_in m_sServerAddress; /* Server's address assembled here */
+	struct sockaddr_in m_sAddress; /* Server's address assembled here */
 	struct hostent * m_sHost_info;
 };
 
@@ -30,5 +32,7 @@ ssize_t Read(int fileDescriptor, void *buffer, size_t numberOfBytes);
 void Write(int fileDescriptor, void *buffer, size_t numberOfBytes);
 void Shutdown(int fileDescriptor, int shutdownOption);
 int Max(int x, int y);
+void signalHandler(int signalNumber);
+void Signal(int signalNumber, void* signalHandler);
 
 #endif /* INCLUDES_SOCKETS_H_ */

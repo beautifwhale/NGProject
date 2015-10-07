@@ -5,14 +5,13 @@
 #include "../includes/Sockets.h"
 #include "../includes/Game.h"
 
-
 int main(int argc, char* argv[]) {
 	int iListenSocketFileDescriptor;
 	char * strServerIPAddress;
 	struct Address sClientAddress;
 	pid_t childProcessID;
 	int connfd;
-	int client_len;
+	socklen_t client_len;
 
 	strServerIPAddress = "0.0.0.0";
 
@@ -27,7 +26,7 @@ int main(int argc, char* argv[]) {
 		exit(2);
 	}
 
-	listen(iListenSocketFileDescriptor, 5);
+	listen(iListenSocketFileDescriptor, MAX_LISTEN_QUEUE_SIZE);
 
 	// signal handler for terminated processes
 	Signal(SIGCHLD, signalHandler);
@@ -37,9 +36,9 @@ int main(int argc, char* argv[]) {
 	for( ; ; ) {
 		client_len = sizeof(sClientAddress.m_sAddress);
 		// Accept connections from clients
-		if ((connfd = accept(iListenSocketFileDescriptor, (struct sockaddr *) &sClientAddress.m_sAddress, &client_len)) < 0) {
-
-			// There was an error in Accept
+		if ((connfd = accept(iListenSocketFileDescriptor, (struct sockaddr *) &sClientAddress.m_sAddress, &client_len)) < 0)
+		{
+			// There was an error (interrupt)
 			if( errno == EINTR )
 			{
 				// Try another Accept() in the event of a system call interrupt
