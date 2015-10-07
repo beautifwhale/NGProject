@@ -19,12 +19,13 @@ int main(int argc, char * argv[]) {
 
 	Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 
-	Connect(iSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sServerAddress, sizeof(sAddress.m_sServerAddress));
+	Connect(iSocketFileDescriptor, (struct sockaddr*) &sAddress.m_sServerAddress, sizeof(sAddress.m_sServerAddress));
 
 	/*OK connected to the server.
 	 Take a line from the server and show it, take a line and send the user input to the server.
 	 Repeat until the server terminates the connection. */
 
+	// Select() start game
 	StartGame(stdin, iSocketFileDescriptor);
 
 	printf("Game over");

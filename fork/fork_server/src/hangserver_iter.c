@@ -22,11 +22,6 @@ int main(int argc, char* argv[]) {
 
 	Address(AF_INET, (struct Address*) &sClientAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 
-
-	//Bind();
-	//Listen();
-	//Accept();
-
 	if (bind(iListenSocketFileDescriptor, (struct sockaddr *) &sClientAddress.m_sAddress, sizeof(sClientAddress.m_sAddress)) < 0) {
 		perror("binding socket");
 		exit(2);
@@ -41,27 +36,43 @@ int main(int argc, char* argv[]) {
 	printf("listening for connections\n");
 	for( ; ; ) {
 		client_len = sizeof(sClientAddress.m_sAddress);
+		// Accept connections from clients
 		if ((connfd = accept(iListenSocketFileDescriptor, (struct sockaddr *) &sClientAddress.m_sAddress, &client_len)) < 0) {
+
+			// There was an error in Accept
 			if( errno == EINTR )
 			{
-				// try another accept
+				// Try another Accept() in the event of a system call interrupt
 				continue;
 			}
 			else
 			{
-				perror("accept error");
+				// There was an error other than an interrupt so close the Parent process
+				perror("Accept error");
 				exit(3);
 			}
 		}
 
+		// There was no error in Accept()! Woo! Create a child process
 		if( (childProcessID = fork()) == 0)
 		{
-			printf("child created\n");
+			// CHILD
+			printf("child %d created\n", childProcessID);
+
+			// close the parents listen file descriptor in the child
 			close(iListenSocketFileDescriptor);
+
 			/* ---------------- Play_hangman () ---------------------*/
 			play_hangman(connfd, connfd);
+
+			/*
+			 *  On return exit to kill the process. The kernel will then
+			 *  send a signal to the parent which is caught by the parents
+			 *  signalHandler() set in Signal()
+			 */
 			exit(0);
 		}
+
 		close(connfd);
 	}
 	return 0;
