@@ -29,7 +29,7 @@ all: fork_client
 fork_client: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc  -o "fork_client" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc -L"/home/david/projects/workspace/ngproject/libsocket" -o "fork_client" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

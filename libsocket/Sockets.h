@@ -34,5 +34,6 @@ void Shutdown(int fileDescriptor, int shutdownOption);
 int Max(int x, int y);
 void signalHandler(int signalNumber);
 void Signal(int signalNumber, void* signalHandler);
+void multiplexStdinFileDescriptor(FILE* fp, int socketFileDescriptor);
 
 #endif /* INCLUDES_SOCKETS_H_ */

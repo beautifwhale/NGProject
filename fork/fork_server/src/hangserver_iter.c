@@ -8,7 +8,7 @@
 int main(int argc, char* argv[]) {
 	int iListenSocketFileDescriptor;
 	char * strServerIPAddress;
-	struct Address sClientAddress;
+	struct Address sAddress;
 	pid_t childProcessID;
 	int connfd;
 	socklen_t client_len;
@@ -19,9 +19,9 @@ int main(int argc, char* argv[]) {
 
 	iListenSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
 
-	Address(AF_INET, (struct Address*) &sClientAddress, strServerIPAddress, HANGMAN_TCP_PORT);
+	Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 
-	if (bind(iListenSocketFileDescriptor, (struct sockaddr *) &sClientAddress.m_sAddress, sizeof(sClientAddress.m_sAddress)) < 0) {
+	if (bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress)) < 0) {
 		perror("binding socket");
 		exit(2);
 	}
@@ -34,9 +34,9 @@ int main(int argc, char* argv[]) {
 
 	printf("listening for connections\n");
 	for( ; ; ) {
-		client_len = sizeof(sClientAddress.m_sAddress);
+		client_len = sizeof(sAddress.m_sAddress);
 		// Accept connections from clients
-		if ((connfd = accept(iListenSocketFileDescriptor, (struct sockaddr *) &sClientAddress.m_sAddress, &client_len)) < 0)
+		if ((connfd = accept(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, &client_len)) < 0)
 		{
 			// There was an error (interrupt)
 			if( errno == EINTR )

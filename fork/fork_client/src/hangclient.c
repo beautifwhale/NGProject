@@ -5,8 +5,8 @@
  * @date	4.10.2015
 */
 #include "../includes/Definitions.h"
-#include "../includes/Sockets.h"
-#include "../includes/Game.h"
+//#include "../includes/Sockets.h"
+#include "../../../libsocket/Sockets.h"
 
 int main(int argc, char * argv[]) {
 	int iSocketFileDescriptor;
@@ -27,7 +27,7 @@ int main(int argc, char * argv[]) {
 	 Repeat until the server terminates the connection. */
 
 	// Select() start game
-	StartGame(stdin, iSocketFileDescriptor);
+	multiplexStdinFileDescriptor(stdin, iSocketFileDescriptor);
 
 	printf("Game over");
 	return 0;
