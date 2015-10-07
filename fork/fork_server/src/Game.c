@@ -6,12 +6,15 @@
  */
 
 #include "../includes/Definitions.h"
+#include "../includes/Sockets.h"
 #include "../includes/Game.h"
 #include <syslog.h>
 
 char *word[] = {
 # include "../words"
 		};
+
+extern time_t time();
 
 void play_hangman(int in, int out) {
 
@@ -26,7 +29,10 @@ void play_hangman(int in, int out) {
 	sprintf(outbuf, "Playing hangman on host %s: \n \n", hostname);
 	write(out, outbuf, strlen(outbuf));
 
+
 	/* Pick a word at random from the list */
+	srand((int) time((long *) 0)); /* randomize the seed */
+
 	whole_word = word[rand() % NUM_OF_WORDS];
 	word_length = strlen(whole_word);
 	syslog(LOG_USER | LOG_INFO, "server chose hangman word %s", whole_word);

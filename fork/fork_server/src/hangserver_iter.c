@@ -5,7 +5,6 @@
 #include "../includes/Sockets.h"
 #include "../includes/Game.h"
 
-extern time_t time();
 
 int main(int argc, char* argv[]) {
 	int iSocketFileDescriptor;
@@ -17,17 +16,16 @@ int main(int argc, char* argv[]) {
 
 	struct sockaddr_in client;
 
-	strServerIPAddress = "0.0.0.0"; //
-
-	srand((int) time((long *) 0)); /* randomize the seed */
+	strServerIPAddress = "0.0.0.0";
 
 	iSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
 
 	Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 
-	//server.sin_family = AF_INET;
-	//sAddress.m_sAddress.sin_addr.s_addr = htonl(INADDR_ANY); // for servers listen on 0.0.0.0
-	//server.sin_port = htons(HANGMAN_TCP_PORT);
+
+	//Bind();
+	//Listen();
+	//Accept();
 
 	if (bind(iSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress)) < 0) {
 		perror("binding socket");
@@ -35,6 +33,8 @@ int main(int argc, char* argv[]) {
 	}
 
 	listen(iSocketFileDescriptor, 5);
+
+	//Signal();
 
 	while (1) {
 		client_len = sizeof(client);
