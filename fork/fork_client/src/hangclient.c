@@ -13,7 +13,8 @@ int main(int argc, char * argv[]) {
 	char * strServerIPAddress;
 	struct Address sAddress;
 
-	strServerIPAddress = (argc == 1) ? argv[1] : "localhost";
+	//strServerIPAddress = (argc == 1) ? argv[1] : "localhost";
+	strServerIPAddress = argv[1];
 
 	iSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
 
