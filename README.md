@@ -18,7 +18,7 @@ Now build each version of the project.
 
 ## Fork client/server:
 
-`$ cd ngproject/fork/<version>`
+`$ cd ngproject/fork/<version>/Debug/`
 
 `$ make`
 
