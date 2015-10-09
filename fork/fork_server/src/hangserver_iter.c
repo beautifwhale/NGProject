@@ -23,11 +23,10 @@ int main(int argc, char* argv[]) {
 
 	Bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
-	listen(iListenSocketFileDescriptor, MAX_LISTEN_QUEUE_SIZE);
+	Listen(iListenSocketFileDescriptor, MAX_LISTEN_QUEUE_SIZE);
 
 	// signal handler for terminated processes
 	Signal(SIGCHLD, signalHandler);
-	//signal(SIGCHLD, signalHandler);
 
 	printf("listening for connections\n");
 	for( ; ; ) {

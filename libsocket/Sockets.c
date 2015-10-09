@@ -121,6 +121,11 @@ void Bind(int socketFileDescriptor, const struct sockaddr* socketAddress, sockle
 	}
 }
 
+void Listen(int socketFileDescriptor, int maxListenQSize)
+{
+	listen(socketFileDescriptor, maxListenQSize);
+}
+
 void multiplexStdinFileDescriptor(FILE* fp, int socketFileDescriptor)
 {
 	int maxFileDescriptorsPlus1;

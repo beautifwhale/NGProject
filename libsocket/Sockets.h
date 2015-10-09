@@ -35,6 +35,7 @@ int Max(int x, int y);
 void signalHandler(int signalNumber);
 void Signal(int signalNumber, void* signalHandler);
 void Bind(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize);
+void Listen(int socketFileDescriptor, int maxListenQSize);
 void multiplexStdinFileDescriptor(FILE* fp, int socketFileDescriptor);
 
 #endif /* INCLUDES_SOCKETS_H_ */
