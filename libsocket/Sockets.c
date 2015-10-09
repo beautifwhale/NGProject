@@ -113,6 +113,14 @@ void signalHandler(int signalNumber)
 	return;
 }
 
+void Bind(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize)
+{
+	if (bind(socketFileDescriptor, socketAddress, socketSize) < 0) {
+		perror("binding socket");
+		exit(2);
+	}
+}
+
 void multiplexStdinFileDescriptor(FILE* fp, int socketFileDescriptor)
 {
 	int maxFileDescriptorsPlus1;

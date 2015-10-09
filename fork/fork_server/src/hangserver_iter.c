@@ -21,10 +21,7 @@ int main(int argc, char* argv[]) {
 
 	Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 
-	if (bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress)) < 0) {
-		perror("binding socket");
-		exit(2);
-	}
+	Bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
 	listen(iListenSocketFileDescriptor, MAX_LISTEN_QUEUE_SIZE);
 
