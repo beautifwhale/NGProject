@@ -20,12 +20,13 @@
 #define MAX_LISTEN_QUEUE_SIZE 1024
 
 struct Address{
-	struct sockaddr_in m_sAddress; /* Server's address assembled here */
+	struct sockaddr_in m_sAddress; /* Address assembled here */
 	struct hostent * m_sHost_info;
 };
 
 int Socket(int family, int type, int protocol);
 void Address(int family, struct Address* address, char* ipAddress, int portNumber);
+void AddressIPX(const char* nodeAddress, const char* service, const struct addrinfo* hints, struct addrinfo** result);
 void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize);
 int Select(int maxFileDescriptorsPlus1, fd_set *readFileDescriptorSet, fd_set *writeFileDescriptorSet, fd_set *exceptFileDescriptorSet, struct timeval *timeout);
 ssize_t Read(int fileDescriptor, void *buffer, size_t numberOfBytes);

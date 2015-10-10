@@ -19,6 +19,8 @@ int main(int argc, char* argv[]) {
 
 	iListenSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
 
+	// Use command line input to pass in the hostname and service port number.
+	// AddressIPX("www.google.com", "1071", struct addrinfo *hints, struct addrinfo** result);
 	Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 
 	Bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));

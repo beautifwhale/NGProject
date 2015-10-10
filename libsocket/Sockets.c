@@ -33,13 +33,17 @@ void Address(int family, struct Address* address, char* ipAddress, int portNumbe
 		exit(2);
 	}
 
-	//
 	address->m_sAddress.sin_family = address->m_sHost_info->h_addrtype; // set protocol family
 
 	// address struct, network address from host_info, size of host_info
 	memcpy((char *) &address->m_sAddress.sin_addr, address->m_sHost_info->h_addr, address->m_sHost_info->h_length);
 
 	address->m_sAddress.sin_port = htons(portNumber); // set server port number
+}
+
+void AddressIPX(const char* nodeAddress, const char* service, const struct addrinfo* hints, struct addrinfo** result)
+{
+	// getaddrinfo()
 }
 
 void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize)
