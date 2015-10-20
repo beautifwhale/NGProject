@@ -1,1 +1,0 @@
-hangclient.d: ../hangclient.c
