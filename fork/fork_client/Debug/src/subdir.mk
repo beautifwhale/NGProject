@@ -4,13 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/hangclient.c 
+../src/fork_client.c 
 
 OBJS += \
-./src/hangclient.o 
+./src/fork_client.o 
 
 C_DEPS += \
-./src/hangclient.d 
+./src/fork_client.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

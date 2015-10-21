@@ -5,15 +5,15 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/Game.c \
-../src/hangserver_iter.c 
+../src/fork_server.c 
 
 OBJS += \
 ./src/Game.o \
-./src/hangserver_iter.o 
+./src/fork_server.o 
 
 C_DEPS += \
 ./src/Game.d \
-./src/hangserver_iter.d 
+./src/fork_server.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
