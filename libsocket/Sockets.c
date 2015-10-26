@@ -200,4 +200,3 @@ void multiplexStdinFileDescriptor(FILE* fp, int socketFileDescriptor)
 		}
 	}
 }
-

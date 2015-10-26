@@ -6,8 +6,10 @@
 */
 #include "../includes/Definitions.h"
 #include "../../../libsocket/Sockets.h"
+#include <string.h>
 
-int main(int argc, char * argv[]) {
+int main(int argc, char * argv[])
+{
 	int iSocketFileDescriptor;
 
 	char* strServerIPAddress;
@@ -19,10 +21,13 @@ int main(int argc, char * argv[]) {
 	strServerIPAddress = argv[1];
 	strClientIPAddress = "0.0.0.0";
 
+	char* strUsername;
+	strUsername = argv[2];
+
 	char buffer[MAX_BUF_SIZE];
 
-	int iServerAddrLen;
-	int iBytesRecieved;
+	int iBytesRecieved = 0;
+	socklen_t iServerAddrSize;
 
 	iSocketFileDescriptor = Socket(AF_INET, SOCK_DGRAM, 0);
 
@@ -31,19 +36,47 @@ int main(int argc, char * argv[]) {
 
 	Bind(iSocketFileDescriptor, (struct sockaddr *) &sClientAddress.m_sAddress, sizeof(sClientAddress.m_sAddress));
 
-	//Connect(iSocketFileDescriptor, (struct sockaddr*) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
+	Connect(iSocketFileDescriptor, (struct sockaddr*) &sClientAddress.m_sAddress, sizeof(sClientAddress.m_sAddress));
 
 	//multiplexStdinFileDescriptor(stdin, iSocketFileDescriptor);
 
-	strcpy(buffer, "Hello server");
-	sendto(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0, (struct sockaddr*) &sServerAddress, sizeof(sServerAddress));
+	iServerAddrSize = sizeof(sServerAddress.m_sAddress);
 
-	iServerAddrLen = sizeof(sServerAddress);
-	iBytesRecieved = recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress, &iServerAddrLen);
-	write(1, buffer, iBytesRecieved);
+	// send username to server
+	sprintf(buffer, "%s", strUsername);
+	sendto(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0, (struct sockaddr*) &sServerAddress, sizeof(sServerAddress.m_sAddress));
+	printf("Username %s sent to the server\n", strUsername);
+
+	// receive confirmation message from server
+	iBytesRecieved = recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
+	printf("%s", buffer);
+
+	// receive game session status
+	iBytesRecieved = recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
+	printf("%s", buffer);
+
+	while(iBytesRecieved > 0)
+	{
+		// send guess to the server
+		fgets(buffer, sizeof(buffer), stdin);
+		sendto(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0, (struct sockaddr*) &sServerAddress, sizeof(sServerAddress.m_sAddress));
+
+		// receive reply from server
+		iBytesRecieved = recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
+		printf("%s Bytes: %d\n", buffer, iBytesRecieved);
+		if(iBytesRecieved < 0)
+		{
+			// server has terminated the connection
+			perror("Server terminated");
+			exit(0);
+		}
+
+	}
+
+	//multiplexStdinFileDescriptor(stdin, iSocketFileDescriptor);
 
 	close(iSocketFileDescriptor);
 
-	printf("Game over");
+	printf("Game over\n");
 	return 0;
 }

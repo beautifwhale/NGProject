@@ -4,6 +4,28 @@
 #include "../includes/Definitions.h"
 #include "../../../libsocket/Sockets.h"
 #include "../includes/Game.h"
+#include <string.h>
+
+void initGameSessions(GameSession* gameSessions /* array of game sessions*/)
+{
+	int i;
+	for(i = 0; i < MAX_GAME_SESSIONS; i++)
+	{
+		gameSessions[i].strUsername = "null";
+		gameSessions[i].index = i;
+		gameSessions[i].cGameState = 'U'; // unknown
+
+	}
+}
+
+void printActiveGameSessions(GameSession* gameSessions)
+{
+	int i;
+	for(i = 0; i < MAX_GAME_SESSIONS; i++)
+	{
+		printf("%d index %d %s\n", i, gameSessions[i].index, gameSessions[i].strUsername);
+	}
+}
 
 int main(int argc, char* argv[]) {
 	int iListenSocketFileDescriptor;
@@ -11,14 +33,18 @@ int main(int argc, char* argv[]) {
 	struct Address sAddress;
 	struct Address sClientAddress;
 
-	pid_t childProcessID;
-	int connfd;
-	socklen_t client_len;
+	struct GameSession gameSessions[MAX_GAME_SESSIONS];
+	int iNumberOfGames = 0;
+	int gameSessionId = 0;
+
+	// initialize game sessions
+	initGameSessions(gameSessions);
+	printActiveGameSessions(gameSessions);
 
 	strServerIPAddress = "0.0.0.0";
 
-	int iClientAddrLen;
-	int iStatus;
+	socklen_t iClientAddrLen;
+	//int iStatus;
 	char* buffer[MAX_BUF_SIZE];
 
 	printf("Server: initialising\n");
@@ -35,17 +61,44 @@ int main(int argc, char* argv[]) {
 
 	// signal handler for terminated processes
 	//Signal(SIGCHLD, signalHandler);
+	//int exitFlag = 0;
 
-	iClientAddrLen = sizeof(sClientAddress);
-	iStatus = recvfrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress, &iClientAddrLen);
+	iClientAddrLen = sizeof(sClientAddress.m_sAddress);
 
-	printf("%s", buffer);
+	while(1)
+	{
+		/*
+		iClientAddrLen = sizeof(sClientAddress);
+		iStatus = recvfrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress, &iClientAddrLen);
 
-	strcat(buffer, "OK!\n");
+		printf("%s", buffer);
 
-	iStatus = sendto(iListenSocketFileDescriptor, buffer, strlen(buffer) + 1, 0, (struct sockaddr*) &sClientAddress, sizeof(sClientAddress));
+		if(strcmp(buffer, "exit\n") == 0)
+		{
+			exitFlag = 1;
+			strcat(buffer, "true\n");
+			printf("server shutting down because exit signal recieved from client");
+		}
 
-	close(iListenSocketFileDescriptor);
+		iStatus = sendto(iListenSocketFileDescriptor, buffer, strlen(buffer) + 1, 0, (struct sockaddr*) &sClientAddress, sizeof(sClientAddress));
+		*/
+		recvfrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress, &iClientAddrLen);
+		printf("received username from client %s\n", buffer);
+
+		// search for game session and create one if none exists
+		gameSessionId = findGameSession(gameSessions, MAX_GAME_SESSIONS, buffer);
+		if(gameSessionId < 0)
+		{
+			printf("No more game slots available");
+			// send message to client
+		}
+
+		printActiveGameSessions(gameSessions);
+
+		play_hangman(iListenSocketFileDescriptor, iListenSocketFileDescriptor, sClientAddress, &gameSessions[gameSessionId]);
+		break;
+	}
+
 	/*
 	printf("listening for connections\n");
 	for( ; ; ) {
@@ -90,7 +143,37 @@ int main(int argc, char* argv[]) {
 		close(connfd);
 	}
 	*/
+	close(iListenSocketFileDescriptor);
 	return 0;
+}
+
+int findGameSession(GameSession* gameSessions, int len, char* username)
+{
+	printf("Searching for game session...\n");
+	int gameSessionId = 0;
+	int i;
+	for(i = 0; i < len; i++)
+	{
+		if(strcmp(gameSessions[i].strUsername, username) == 0)
+		{
+			printf("Game session found!\n");
+			return i; // return game session id
+		}
+	}
+
+	// no game session found, create a new game session
+	for(i = 0; i < len; i++)
+	{
+		if(strcmp(gameSessions[i].strUsername, "null") == 0)
+		{
+			printf("Empty slot found!\n");
+			gameSessions[i].strUsername = username;
+			return i; // return game session id
+		}
+	}
+
+	// there are no game session slots left
+	return -1;
 }
 
 

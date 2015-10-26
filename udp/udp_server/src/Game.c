@@ -18,19 +18,23 @@ char *word[] = {
 
 extern time_t time();
 
-void play_hangman(int in, int out) {
+void play_hangman(int in, int out, struct Address client, GameSession* gameSession) {
 
+	printf("Playing game with %s\n", gameSession->strUsername);
 	char * whole_word, part_word[MAXLEN], guess[MAXLEN], outbuf[MAXLEN];
 
 	int lives = MAX_LIVES;
-	int game_state = 'I'; //I = Incomplete
+	//int game_state = 'I'; //I = Incomplete
+	gameSession->cGameState = 'I';
 	int i, good_guess, word_length;
 	char hostname[MAXLEN];
 
-	gethostname(hostname, MAXLEN);
-	sprintf(outbuf, "Playing hangman on host %s: \n \n", hostname);
-	write(out, outbuf, strlen(outbuf));
+	socklen_t iClientSize;
+	iClientSize = sizeof(client.m_sAddress);
 
+	gethostname(hostname, MAXLEN);
+	sprintf(outbuf, "Playing hangman on host %s with %s:", hostname, gameSession->strUsername);
+	sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
 
 	/* Pick a word at random from the list */
 	srand((int) time((long *) 0)); /* randomize the seed */
@@ -45,17 +49,25 @@ void play_hangman(int in, int out) {
 
 	part_word[i] = '\0';
 
-	sprintf(outbuf, "%s %d \n", part_word, lives);
-	write(out, outbuf, strlen(outbuf));
+	sprintf(outbuf, "%s %d", part_word, lives);
+	//write(out, outbuf, strlen(outbuf));
+	sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client, sizeof(client));
+	//printf("message sent to client: %s", outbuf);
 
-	while (game_state == 'I')
+
+
+	while (gameSession->cGameState == 'I')
 	/* Get a letter from player guess */
 	{
+		recvfrom(in, guess, MAXLEN, 0, (struct sockaddr*) &client.m_sAddress, &iClientSize);
+		//write(1, guess, sizeof(guess));
+		/*
 		while (read(in, guess, MAXLEN) < 0) {
 			if (errno != EINTR)
 				exit(4);
 			printf("re-read the startin \n");
-		} /* Re-start read () if interrupted by signal */
+		}
+		*/
 		good_guess = 0;
 		for (i = 0; i < word_length; i++) {
 			if (guess[0] == whole_word[i]) {
@@ -66,13 +78,15 @@ void play_hangman(int in, int out) {
 		if (!good_guess)
 			lives--;
 		if (strcmp(whole_word, part_word) == 0)
-			game_state = 'W'; /* W ==> User Won */
+			gameSession->cGameState = 'W';
 		else if (lives == 0) {
-			game_state = 'L'; /* L ==> User Lost */
-			strcpy(part_word, whole_word); /* User Show the word */
+			//game_state = 'L';
+			gameSession->cGameState = 'L';
+			strcpy(part_word, whole_word);
 		}
-		sprintf(outbuf, "%s %d \n", part_word, lives);
-		write(out, outbuf, strlen(outbuf));
+		sprintf(outbuf, "%s %d", part_word, lives);
+		//write(out, outbuf, strlen(outbuf));
+		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client, sizeof(client));
 	}
 }
 
