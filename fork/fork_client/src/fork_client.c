@@ -1,11 +1,5 @@
-/*
- * Hangclient.c - Client for hangman server.
- *
- * @author	David Morton, add names here...
- * @date	4.10.2015
-*/
-#include "../includes/Definitions.h"
-#include "../../../libsocket/Sockets.h"
+#include "../../../libsocket/socket.h"
+#include "../includes/definitions.h"
 
 int main(int argc, char * argv[]) {
 	int iSocketFileDescriptor;
@@ -20,7 +14,7 @@ int main(int argc, char * argv[]) {
 
 	Connect(iSocketFileDescriptor, (struct sockaddr*) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
-	multiplexStdinFileDescriptor(stdin, iSocketFileDescriptor);
+	MultiplexStdinFileDescriptor(stdin, iSocketFileDescriptor);
 
 	printf("Game over");
 	return 0;

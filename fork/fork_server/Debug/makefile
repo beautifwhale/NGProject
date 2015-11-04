@@ -44,7 +44,7 @@ all: fork_server
 fork_server: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -L"/Users/mortond/Documents/workspace/raig/libsocket/libs" -o "fork_server" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L"/Users/mortond/Documents/workspace/ngproject/libsocket" -o "fork_server" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

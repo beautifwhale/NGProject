@@ -1,9 +1,6 @@
-/* Network server for hangman game */
-/* File: hangserver.c */
-
-#include "../includes/Definitions.h"
-#include "../../../libsocket/Sockets.h"
-#include "../includes/Game.h"
+#include "../../../libsocket/socket.h"
+#include "../includes/definitions.h"
+#include "../includes/game.h"
 
 int main(int argc, char* argv[]) {
 	int iListenSocketFileDescriptor;

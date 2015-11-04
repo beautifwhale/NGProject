@@ -5,11 +5,12 @@
  *      Author: david
  */
 
+#include "socket.h"
+
 #include <string.h> // memcpy()
 #include <signal.h> // SIGCHLD
 #include <sys/wait.h>
 
-#include "Sockets.h"
 
 int Socket(int family, int type, int protocol)
 {
@@ -130,7 +131,7 @@ void Listen(int socketFileDescriptor, int maxListenQSize)
 	listen(socketFileDescriptor, maxListenQSize);
 }
 
-void multiplexStdinFileDescriptor(FILE* fp, int socketFileDescriptor)
+void MultiplexStdinFileDescriptor(FILE* fp, int socketFileDescriptor)
 {
 	int maxFileDescriptorsPlus1;
 	int stdinEOF = 0;

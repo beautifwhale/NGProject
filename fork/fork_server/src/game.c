@@ -1,16 +1,9 @@
-/*
- * game.cpp
- *
- *  Created on: 4 Oct 2015
- *      Author: david
- */
-
-#include "../includes/Definitions.h"
-#include "../includes/Game.h"
 #include <syslog.h> // syslog()
 #include <string.h> // strlen()
 #include <unistd.h> // gethostname(), write()
 #include <stdlib.h>
+#include "../includes/definitions.h"
+#include "../includes/game.h"
 
 char *word[] = {
 # include "../words"
