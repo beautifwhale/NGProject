@@ -1,12 +1,6 @@
-/*
- * Hangclient.c - Client for hangman server.
- *
- * @author	David Morton, add names here...
- * @date	4.10.2015
-*/
-#include "../includes/Definitions.h"
 #include "../../../libsocket/socket.h"
 #include <string.h>
+#include "../includes/definitions.h"
 
 int main(int argc, char * argv[])
 {
@@ -36,10 +30,6 @@ int main(int argc, char * argv[])
 
 	Bind(iSocketFileDescriptor, (struct sockaddr *) &sClientAddress.m_sAddress, sizeof(sClientAddress.m_sAddress));
 
-	Connect(iSocketFileDescriptor, (struct sockaddr*) &sClientAddress.m_sAddress, sizeof(sClientAddress.m_sAddress));
-
-	//multiplexStdinFileDescriptor(stdin, iSocketFileDescriptor);
-
 	iServerAddrSize = sizeof(sServerAddress.m_sAddress);
 
 	// send username to server
@@ -48,20 +38,24 @@ int main(int argc, char * argv[])
 	printf("Username %s sent to the server\n", strUsername);
 
 	// receive confirmation message from server
+	printf("waiting for confirmation message from the server...\n");
 	iBytesRecieved = recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
-	printf("%s", buffer);
+	printf("%s\n", buffer);
 
 	// receive game session status
+	printf("waiting for game session status...\n");
 	iBytesRecieved = recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
-	printf("%s", buffer);
+	printf("%s\n", buffer);
 
 	while(iBytesRecieved > 0)
 	{
 		// send guess to the server
+		printf("send guess to the server:\n");
 		fgets(buffer, sizeof(buffer), stdin);
 		sendto(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0, (struct sockaddr*) &sServerAddress, sizeof(sServerAddress.m_sAddress));
 
 		// receive reply from server
+		printf("waiting for reply from the server...\n");
 		iBytesRecieved = recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
 		printf("%s Bytes: %d\n", buffer, iBytesRecieved);
 		if(iBytesRecieved < 0)

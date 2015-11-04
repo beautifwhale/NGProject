@@ -1,16 +1,10 @@
-/*
- * game.cpp
- *
- *  Created on: 4 Oct 2015
- *      Author: david
- */
 
-#include "../includes/Definitions.h"
-#include "../includes/Game.h"
 #include <syslog.h> // syslog()
 #include <string.h> // strlen()
 #include <unistd.h> // gethostname(), write()
 #include <stdlib.h>
+#include "../includes/definitions.h"
+#include "../includes/game.h"
 
 char *word[] = {
 # include "../words"
@@ -33,10 +27,12 @@ void play_hangman(int in, int out, struct Address client, GameSession* gameSessi
 	iClientSize = sizeof(client.m_sAddress);
 
 	gethostname(hostname, MAXLEN);
+	printf("sending confirmation message to the client..\n");
 	sprintf(outbuf, "Playing hangman on host %s with %s:", hostname, gameSession->strUsername);
 	sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
 
 	/* Pick a word at random from the list */
+	printf("picking a random word...\n");
 	srand((int) time((long *) 0)); /* randomize the seed */
 
 	whole_word = word[rand() % NUM_OF_WORDS];
@@ -49,16 +45,14 @@ void play_hangman(int in, int out, struct Address client, GameSession* gameSessi
 
 	part_word[i] = '\0';
 
+	printf("sending game status to client..\n");
 	sprintf(outbuf, "%s %d", part_word, lives);
-	//write(out, outbuf, strlen(outbuf));
-	sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client, sizeof(client));
-	//printf("message sent to client: %s", outbuf);
-
-
+	sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
 
 	while (gameSession->cGameState == 'I')
 	/* Get a letter from player guess */
 	{
+		printf("waiting for guess from the client...\n");
 		recvfrom(in, guess, MAXLEN, 0, (struct sockaddr*) &client.m_sAddress, &iClientSize);
 		//write(1, guess, sizeof(guess));
 		/*
@@ -84,9 +78,10 @@ void play_hangman(int in, int out, struct Address client, GameSession* gameSessi
 			gameSession->cGameState = 'L';
 			strcpy(part_word, whole_word);
 		}
+
+		printf("sending game state to the client...\n");
 		sprintf(outbuf, "%s %d", part_word, lives);
-		//write(out, outbuf, strlen(outbuf));
-		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client, sizeof(client));
+		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
 	}
 }
 

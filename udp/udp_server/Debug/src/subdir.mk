@@ -4,15 +4,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/Game.c \
+../src/game.c \
 ../src/udp_server.c 
 
 OBJS += \
-./src/Game.o \
+./src/game.o \
 ./src/udp_server.o 
 
 C_DEPS += \
-./src/Game.d \
+./src/game.d \
 ./src/udp_server.d 
 
 

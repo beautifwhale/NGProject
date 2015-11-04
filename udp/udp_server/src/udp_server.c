@@ -1,10 +1,7 @@
-/* Network server for hangman game */
-/* File: hangserver.c */
-
-#include "../includes/Definitions.h"
-#include "../../../libsocket/socket.h"
-#include "../includes/Game.h"
 #include <string.h>
+#include "../../../libsocket/socket.h"
+#include "../includes/definitions.h"
+#include "../includes/game.h"
 
 void initGameSessions(GameSession* gameSessions /* array of game sessions*/)
 {
@@ -23,7 +20,10 @@ void printActiveGameSessions(GameSession* gameSessions)
 	int i;
 	for(i = 0; i < MAX_GAME_SESSIONS; i++)
 	{
-		printf("%d index %d %s\n", i, gameSessions[i].index, gameSessions[i].strUsername);
+		if(strcmp(gameSessions[i].strUsername, "null"))
+		{
+			printf("%d index %d %s\n", i, gameSessions[i].index, gameSessions[i].strUsername);
+		}
 	}
 }
 
@@ -34,7 +34,6 @@ int main(int argc, char* argv[]) {
 	struct Address sClientAddress;
 
 	struct GameSession gameSessions[MAX_GAME_SESSIONS];
-	int iNumberOfGames = 0;
 	int gameSessionId = 0;
 
 	// initialize game sessions
@@ -44,7 +43,6 @@ int main(int argc, char* argv[]) {
 	strServerIPAddress = "0.0.0.0";
 
 	socklen_t iClientAddrLen;
-	//int iStatus;
 	char* buffer[MAX_BUF_SIZE];
 
 	printf("Server: initialising\n");
@@ -67,26 +65,13 @@ int main(int argc, char* argv[]) {
 
 	while(1)
 	{
-		/*
-		iClientAddrLen = sizeof(sClientAddress);
-		iStatus = recvfrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress, &iClientAddrLen);
 
-		printf("%s", buffer);
-
-		if(strcmp(buffer, "exit\n") == 0)
-		{
-			exitFlag = 1;
-			strcat(buffer, "true\n");
-			printf("server shutting down because exit signal recieved from client");
-		}
-
-		iStatus = sendto(iListenSocketFileDescriptor, buffer, strlen(buffer) + 1, 0, (struct sockaddr*) &sClientAddress, sizeof(sClientAddress));
-		*/
+		printf("waiting for username from the client...\n");
 		recvfrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress, &iClientAddrLen);
-		printf("received username from client %s\n", buffer);
+		printf("received username from client %s\n", (char*)buffer);
 
 		// search for game session and create one if none exists
-		gameSessionId = findGameSession(gameSessions, MAX_GAME_SESSIONS, buffer);
+		gameSessionId = findGameSession(gameSessions, MAX_GAME_SESSIONS, (char*)buffer);
 		if(gameSessionId < 0)
 		{
 			printf("No more game slots available");
@@ -95,62 +80,19 @@ int main(int argc, char* argv[]) {
 
 		printActiveGameSessions(gameSessions);
 
+		printf("calling play_hangman()\n");
 		play_hangman(iListenSocketFileDescriptor, iListenSocketFileDescriptor, sClientAddress, &gameSessions[gameSessionId]);
+
+		printf("closing socket file descriptor\n");
+		close(iListenSocketFileDescriptor);
 		break;
 	}
-
-	/*
-	printf("listening for connections\n");
-	for( ; ; ) {
-		client_len = sizeof(sAddress.m_sAddress);
-		// Accept connections from clients
-		if ((connfd = accept(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, &client_len)) < 0)
-		{
-			// There was an error (interrupt)
-			if( errno == EINTR )
-			{
-				// Try another Accept() in the event of a system call interrupt
-				continue;
-			}
-			else
-			{
-				// There was an error other than an interrupt so close the Parent process
-				perror("Accept error");
-				exit(3);
-			}
-		}
-
-		// There was no error in Accept()! Woo! Create a child process
-		if( (childProcessID = fork()) == 0)
-		{
-			// CHILD
-			//printf("child %d created\n", childProcessID);
-
-			// close the parents listen file descriptor in the child
-			close(iListenSocketFileDescriptor);
-
-			// ---------------- Play_hangman () ---------------------
-			play_hangman(connfd, connfd);
-
-
-			 // On return exit to kill the process. The kernel will then
-			 // send a signal to the parent which is caught by the parents
-			 // signalHandler() set in Signal()
-
-			exit(0);
-		}
-
-		close(connfd);
-	}
-	*/
-	close(iListenSocketFileDescriptor);
 	return 0;
 }
 
 int findGameSession(GameSession* gameSessions, int len, char* username)
 {
 	printf("Searching for game session...\n");
-	int gameSessionId = 0;
 	int i;
 	for(i = 0; i < len; i++)
 	{

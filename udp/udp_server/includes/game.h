@@ -1,12 +1,6 @@
-/*
- * Game.h
- *
- *  Created on: 4 Oct 2015
- *      Author: david
- */
-
 #ifndef INCLUDES_GAME_H_
 #define INCLUDES_GAME_H_
+
 #include "../../../libsocket/socket.h"
 
 typedef struct GameSession{
