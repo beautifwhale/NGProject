@@ -29,7 +29,7 @@ all: udp_server
 udp_server: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc -L"/home/david/workspace/ngproject/libsocket" -o "udp_server" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc -L"/Users/mortond/Documents/workspace/raig/libsocket" -o "udp_server" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

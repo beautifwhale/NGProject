@@ -5,7 +5,7 @@
  * @date	4.10.2015
 */
 #include "../includes/Definitions.h"
-#include "../../../libsocket/Sockets.h"
+#include "../../../libsocket/socket.h"
 #include <string.h>
 
 int main(int argc, char * argv[])

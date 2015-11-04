@@ -2,7 +2,7 @@
 /* File: hangserver.c */
 
 #include "../includes/Definitions.h"
-#include "../../../libsocket/Sockets.h"
+#include "../../../libsocket/socket.h"
 #include "../includes/Game.h"
 #include <string.h>
 

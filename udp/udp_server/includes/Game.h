@@ -7,7 +7,7 @@
 
 #ifndef INCLUDES_GAME_H_
 #define INCLUDES_GAME_H_
-#include "../../../libsocket/Sockets.h"
+#include "../../../libsocket/socket.h"
 
 typedef struct GameSession{
 	int index;
