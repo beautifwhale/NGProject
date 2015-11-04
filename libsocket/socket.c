@@ -1,16 +1,7 @@
-/*
- * Socket.c
- *
- *  Created on: 4 Oct 2015
- *      Author: david
- */
-
 #include "socket.h"
-
 #include <string.h> // memcpy()
 #include <signal.h> // SIGCHLD
 #include <sys/wait.h>
-
 
 int Socket(int family, int type, int protocol)
 {
