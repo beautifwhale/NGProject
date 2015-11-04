@@ -9,7 +9,6 @@ void initGameSessions(GameSession* gameSessions /* array of game sessions*/)
 	for(i = 0; i < MAX_GAME_SESSIONS; i++)
 	{
 		gameSessions[i].strUsername = "null";
-		gameSessions[i].index = i;
 		gameSessions[i].cGameState = 'U'; // unknown
 
 	}
@@ -17,15 +16,45 @@ void initGameSessions(GameSession* gameSessions /* array of game sessions*/)
 
 void printActiveGameSessions(GameSession* gameSessions)
 {
+	printf("active game sessions:\n");
 	int i;
 	for(i = 0; i < MAX_GAME_SESSIONS; i++)
 	{
 		if(strcmp(gameSessions[i].strUsername, "null"))
 		{
-			printf("%d index %d %s\n", i, gameSessions[i].index, gameSessions[i].strUsername);
+			printf("%d %s\n", i, gameSessions[i].strUsername);
 		}
 	}
 }
+
+int findGameSession(GameSession* gameSessions, int len, char* username)
+{
+	printf("Searching for game session...\n");
+	int i;
+	for(i = 0; i < len; i++)
+	{
+		if(strcmp(gameSessions[i].strUsername, username) == 0)
+		{
+			printf("Game session found!\n");
+			return i; // return game session id
+		}
+	}
+
+	// no game session found, create a new game session
+	for(i = 0; i < len; i++)
+	{
+		if(strcmp(gameSessions[i].strUsername, "null") == 0)
+		{
+			printf("Empty slot found!\n");
+			gameSessions[i].strUsername = username;
+			return i; // return game session id
+		}
+	}
+
+	// there are no game session slots left
+	return -1;
+}
+
 
 int main(int argc, char* argv[]) {
 	int iListenSocketFileDescriptor;
@@ -38,7 +67,6 @@ int main(int argc, char* argv[]) {
 
 	// initialize game sessions
 	initGameSessions(gameSessions);
-	printActiveGameSessions(gameSessions);
 
 	strServerIPAddress = "0.0.0.0";
 
@@ -81,6 +109,8 @@ int main(int argc, char* argv[]) {
 		printActiveGameSessions(gameSessions);
 
 		printf("calling play_hangman()\n");
+
+		// ProcessRequest from client and return to check next message
 		play_hangman(iListenSocketFileDescriptor, iListenSocketFileDescriptor, sClientAddress, &gameSessions[gameSessionId]);
 
 		printf("closing socket file descriptor\n");
@@ -90,33 +120,6 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-int findGameSession(GameSession* gameSessions, int len, char* username)
-{
-	printf("Searching for game session...\n");
-	int i;
-	for(i = 0; i < len; i++)
-	{
-		if(strcmp(gameSessions[i].strUsername, username) == 0)
-		{
-			printf("Game session found!\n");
-			return i; // return game session id
-		}
-	}
-
-	// no game session found, create a new game session
-	for(i = 0; i < len; i++)
-	{
-		if(strcmp(gameSessions[i].strUsername, "null") == 0)
-		{
-			printf("Empty slot found!\n");
-			gameSessions[i].strUsername = username;
-			return i; // return game session id
-		}
-	}
-
-	// there are no game session slots left
-	return -1;
-}
 
 
 

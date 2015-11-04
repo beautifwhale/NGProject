@@ -4,7 +4,6 @@
 #include "../../../libsocket/socket.h"
 
 typedef struct GameSession{
-	int index;
 	char cGameState;
 	char* strUsername;
 } GameSession;
@@ -12,6 +11,7 @@ typedef struct GameSession{
 #define MAX_GAME_SESSIONS 50
 
 void play_hangman(int in, int out, struct Address client, GameSession* gameSession);
+void ProcessRequest(int in, int out, struct Address client, GameSession* gameSession);
 int findGameSession(GameSession* gameSessions, int len, char* username);
 
 
