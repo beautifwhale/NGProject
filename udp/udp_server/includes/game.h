@@ -35,15 +35,17 @@ struct GameSession{
 	int iSessionId;
 };
 
-#define MAX_GAME_SESSIONS 50
+#define MAX_GAME_SESSIONS 1
 
-void initGameSessions(struct GameSession* gameSessions /* array of game sessions*/);
-void PrintActiveGameSessions(struct GameSession* gameSessions);
+struct GameSession gameSessions[MAX_GAME_SESSIONS];
+
+void InitGameSessions();
+void initGameSessions(struct GameSession *gameSessions /* array of game sessions*/);
+void PrintActiveGameSessions();
 void PrintGameSession(struct GameSession *gameSession);
-int FindGameSession(struct GameSession* gameSessions, int len, char* username);
+struct GameSession *FindGameSession(char* username);
 void play_hangman(int in, int out, struct Address client, struct GameSession* gameSession);
 int ProcessRequest(int in, int out, struct Address client, struct GameSession* gameSession, char* message);
-int findGameSession(struct GameSession* gameSessions, int len, char* username);
 void EndGameSession(struct GameSession *gameSession);
 
 

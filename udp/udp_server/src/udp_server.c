@@ -1,7 +1,7 @@
-#include <string.h>
 #include "../../../libsocket/socket.h"
 #include "../includes/definitions.h"
 #include "../includes/game.h"
+#include <string.h>
 
 int main(int argc, char* argv[]) {
 	int iListenSocketFileDescriptor;
@@ -9,18 +9,17 @@ int main(int argc, char* argv[]) {
 	struct Address sAddress;
 	struct Address sClientAddress;
 
-	struct GameSession gameSessions[MAX_GAME_SESSIONS];
-	int gameSessionId = 0;
+	struct GameSession *gameSession;
 
-	// initialize game sessions
-	initGameSessions(gameSessions);
+	// Initialize all game sessions
+	InitGameSessions();
 
 	strServerIPAddress = "0.0.0.0";
 
 	socklen_t iClientAddrLen;
 	char* buffer[MAX_BUF_SIZE];
 
-	printf("Server: initialising\n");
+	printf("Server initialising...\n");
 
 	iListenSocketFileDescriptor = Socket(AF_INET, SOCK_DGRAM, 0);
 
@@ -47,31 +46,24 @@ int main(int argc, char* argv[]) {
 
 		printf("Connected to client %s with message %s\n", username, message);
 
-		PrintActiveGameSessions(gameSessions);
+		PrintActiveGameSessions();
 
-		// search for game session and create one if none exists
-		gameSessionId = FindGameSession(gameSessions, MAX_GAME_SESSIONS, username);
-		if(gameSessionId < 0)
+		// Search for game session and create one if none exists
+		gameSession = FindGameSession(username);
+		if(gameSession == NULL)
 		{
-			printf("No more game slots available");
-			// send message to client
+			printf("No more game slots available\n");
 		}
 
 		// ProcessRequest from client and return to check next message
-		if(ProcessRequest(iListenSocketFileDescriptor, iListenSocketFileDescriptor, sClientAddress, &gameSessions[gameSessionId], message) == -1)
+		if(ProcessRequest(iListenSocketFileDescriptor, iListenSocketFileDescriptor, sClientAddress, gameSession, message) == -1)
 		{
 			printf("End game session and remove from memory\n");
-			EndGameSession(&gameSessions[gameSessionId]);
+			if(gameSession)
+			{
+				EndGameSession(gameSession);
+			}
 		}
-
-		/*
-		printf("calling play_hangman()\n");
-		if(play_hangman(iListenSocketFileDescriptor, iListenSocketFileDescriptor, sClientAddress, &gameSessions[gameSessionId]) == -1)
-		{
-			printf("closing socket file descriptor\n");
-			close(iListenSocketFileDescriptor);
-		}
-		*/
 	}
 	return 0;
 }

@@ -12,6 +12,20 @@ char *word[] = {
 
 extern time_t time();
 
+void InitGameSessions()
+{
+	int i;
+	for(i = 0; i < MAX_GAME_SESSIONS; i++)
+	{
+		strcpy(gameSessions[i].strUsername, "null");
+		gameSessions[i].cGameState = 'U'; // unknown
+		gameSessions[i].iLives = 0;
+		gameSessions[i].iRandomWordLength = 0;
+		gameSessions[i].iSequenceNumber = 0;
+		gameSessions[i].strRandomWord = "null";
+	}
+}
+
 void initGameSessions(struct GameSession* gameSessions /* array of game sessions*/)
 {
 	int i;
@@ -26,7 +40,8 @@ void initGameSessions(struct GameSession* gameSessions /* array of game sessions
 	}
 }
 
-void PrintActiveGameSessions(struct GameSession* gameSessions)
+
+void PrintActiveGameSessions()
 {
 	printf("active game sessions:\n");
 	int i;
@@ -48,34 +63,37 @@ void PrintGameSession(struct GameSession *gameSession)
 	printf("Progress: %s\n", gameSession->strPartWord);
 }
 
-int FindGameSession(struct GameSession* gameSessions, int maxNumberOfGameSessions, char* username)
+struct GameSession *FindGameSession(char* username)
 {
 	printf("Searching for game session with %s...\n", username);
 	int i;
-	for(i = 0; i < maxNumberOfGameSessions; i++)
+	for(i = 0; i < MAX_GAME_SESSIONS; i++)
 	{
 		if(strcmp(gameSessions[i].strUsername, username) == 0)
 		{
 			printf("Game session found!\n");
-			return gameSessions[i].iSessionId; // return game session id
+			//return gameSessions[i].iSessionId; // return game session id
+			return &gameSessions[i];
 		}
 	}
 
 	// no game session found, create a new game session
-	for(i = 0; i < maxNumberOfGameSessions; i++)
+	for(i = 0; i < MAX_GAME_SESSIONS; i++)
 	{
 		if(strcmp(gameSessions[i].strUsername, "null") == 0)
 		{
 			printf("No game session. Empty slot found! Creating new game...\n");
 			strcpy(gameSessions[i].strUsername, username);
 			gameSessions[i].iSessionId = i;
-			return gameSessions[i].iSessionId; // return game session id
+			//return gameSessions[i].iSessionId; // return game session id
+			return &gameSessions[i];
 		}
 	}
 
 	// there are no game session slots left
-	return -1;
+	return NULL;
 }
+
 
 void EndGameSession(struct GameSession *gameSession)
 {
@@ -170,6 +188,16 @@ int ProcessRequest(int in, int out, struct Address client, struct GameSession* g
 
 	socklen_t iClientSize;
 	iClientSize = sizeof(client.m_sAddress);
+
+	printf("Checking game session status...\n");
+	// No more game slots available on the server
+	if(gameSession == NULL)
+	{
+		sprintf(outbuf, "%s", "Connection failed no empty game slots on the server.");
+		printf("Connection refused\n");
+		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
+		return -1;
+	}
 
 	// If the client has just connected and this is the
 	// beginning of the game.
