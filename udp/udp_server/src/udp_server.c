@@ -3,59 +3,6 @@
 #include "../includes/definitions.h"
 #include "../includes/game.h"
 
-void initGameSessions(GameSession* gameSessions /* array of game sessions*/)
-{
-	int i;
-	for(i = 0; i < MAX_GAME_SESSIONS; i++)
-	{
-		gameSessions[i].strUsername = "null";
-		gameSessions[i].cGameState = 'U'; // unknown
-
-	}
-}
-
-void printActiveGameSessions(GameSession* gameSessions)
-{
-	printf("active game sessions:\n");
-	int i;
-	for(i = 0; i < MAX_GAME_SESSIONS; i++)
-	{
-		if(strcmp(gameSessions[i].strUsername, "null"))
-		{
-			printf("%d %s\n", i, gameSessions[i].strUsername);
-		}
-	}
-}
-
-int findGameSession(GameSession* gameSessions, int len, char* username)
-{
-	printf("Searching for game session...\n");
-	int i;
-	for(i = 0; i < len; i++)
-	{
-		if(strcmp(gameSessions[i].strUsername, username) == 0)
-		{
-			printf("Game session found!\n");
-			return i; // return game session id
-		}
-	}
-
-	// no game session found, create a new game session
-	for(i = 0; i < len; i++)
-	{
-		if(strcmp(gameSessions[i].strUsername, "null") == 0)
-		{
-			printf("Empty slot found!\n");
-			gameSessions[i].strUsername = username;
-			return i; // return game session id
-		}
-	}
-
-	// there are no game session slots left
-	return -1;
-}
-
-
 int main(int argc, char* argv[]) {
 	int iListenSocketFileDescriptor;
 	char * strServerIPAddress;
@@ -83,39 +30,48 @@ int main(int argc, char* argv[]) {
 
 	Bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
-	//Listen(iListenSocketFileDescriptor, MAX_LISTEN_QUEUE_SIZE);
-
-	// signal handler for terminated processes
-	//Signal(SIGCHLD, signalHandler);
-	//int exitFlag = 0;
-
 	iClientAddrLen = sizeof(sClientAddress.m_sAddress);
 
 	while(1)
 	{
+		printf("waiting for message from the client...\n");
+		if(recvfrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress, &iClientAddrLen) == 0)
+		{
+			printf("Client has closed connection\n");
+			continue;
+		}
+		printf("Received: %s\n", (char*)buffer);
+		printf("Processing packet...\n");
+		char *username = strtok((char*)buffer, "_"); // tokenize the string using space as delimiter. Get username
+		char *message = strtok((char*)NULL, "_"); // get the remaining message
 
-		printf("waiting for username from the client...\n");
-		recvfrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress, &iClientAddrLen);
-		printf("received username from client %s\n", (char*)buffer);
+		printf("Connected to client %s with message %s\n", username, message);
+
+		PrintActiveGameSessions(gameSessions);
 
 		// search for game session and create one if none exists
-		gameSessionId = findGameSession(gameSessions, MAX_GAME_SESSIONS, (char*)buffer);
+		gameSessionId = FindGameSession(gameSessions, MAX_GAME_SESSIONS, username);
 		if(gameSessionId < 0)
 		{
 			printf("No more game slots available");
 			// send message to client
 		}
 
-		printActiveGameSessions(gameSessions);
-
-		printf("calling play_hangman()\n");
-
 		// ProcessRequest from client and return to check next message
-		play_hangman(iListenSocketFileDescriptor, iListenSocketFileDescriptor, sClientAddress, &gameSessions[gameSessionId]);
+		if(ProcessRequest(iListenSocketFileDescriptor, iListenSocketFileDescriptor, sClientAddress, &gameSessions[gameSessionId], message) == -1)
+		{
+			printf("End game session and remove from memory\n");
+			EndGameSession(&gameSessions[gameSessionId]);
+		}
 
-		printf("closing socket file descriptor\n");
-		close(iListenSocketFileDescriptor);
-		break;
+		/*
+		printf("calling play_hangman()\n");
+		if(play_hangman(iListenSocketFileDescriptor, iListenSocketFileDescriptor, sClientAddress, &gameSessions[gameSessionId]) == -1)
+		{
+			printf("closing socket file descriptor\n");
+			close(iListenSocketFileDescriptor);
+		}
+		*/
 	}
 	return 0;
 }

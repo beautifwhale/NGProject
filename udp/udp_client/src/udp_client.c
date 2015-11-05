@@ -18,7 +18,10 @@ int main(int argc, char * argv[])
 	char* strUsername;
 	strUsername = argv[2];
 
+	printf("Username: %s\n", strUsername);
+
 	char buffer[MAX_BUF_SIZE];
+	char userInput[MAX_BUF_SIZE];
 
 	int iBytesRecieved = 0;
 	socklen_t iServerAddrSize;
@@ -32,8 +35,8 @@ int main(int argc, char * argv[])
 
 	iServerAddrSize = sizeof(sServerAddress.m_sAddress);
 
-	// send username to server
-	sprintf(buffer, "%s", strUsername);
+	// Send username to server
+	sprintf(buffer, "%s_ ", strUsername);
 	sendto(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0, (struct sockaddr*) &sServerAddress, sizeof(sServerAddress.m_sAddress));
 	printf("Username %s sent to the server\n", strUsername);
 
@@ -44,33 +47,32 @@ int main(int argc, char * argv[])
 
 	// receive game session status
 	printf("waiting for game session status...\n");
-	iBytesRecieved = recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
+	recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
 	printf("%s\n", buffer);
 
-	while(iBytesRecieved > 0)
+	while(1)
 	{
 		// send guess to the server
 		printf("send guess to the server:\n");
-		fgets(buffer, sizeof(buffer), stdin);
+		fgets(userInput, sizeof(userInput), stdin);
+		sprintf(buffer, "%s_%s", strUsername, userInput);
+		printf("Sending: %s", buffer);
 		sendto(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0, (struct sockaddr*) &sServerAddress, sizeof(sServerAddress.m_sAddress));
 
 		// receive reply from server
 		printf("waiting for reply from the server...\n");
-		iBytesRecieved = recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
-		printf("%s Bytes: %d\n", buffer, iBytesRecieved);
-		if(iBytesRecieved < 0)
+		recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
+		printf("%s\n", buffer);
+		if(strstr(buffer, "lost") != NULL || strstr(buffer, "won") != NULL)
 		{
-			// server has terminated the connection
-			perror("Server terminated");
-			exit(0);
+			// Game over
+			break;
 		}
-
 	}
 
 	//multiplexStdinFileDescriptor(stdin, iSocketFileDescriptor);
 
 	close(iSocketFileDescriptor);
-
 	printf("Game over\n");
 	return 0;
 }
