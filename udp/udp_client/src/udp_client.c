@@ -23,6 +23,10 @@ int main(int argc, char * argv[])
 
 	socklen_t iServerAddrSize;
 
+	// Connection to server is active initially.
+	int iConnectionSuccess = 1;
+
+
 	iSocketFileDescriptor = Socket(AF_INET, SOCK_DGRAM, 0);
 
 	Address(AF_INET, (struct Address*) &sClientAddress, strClientIPAddress, 0);
@@ -37,26 +41,28 @@ int main(int argc, char * argv[])
 	sendto(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0, (struct sockaddr*) &sServerAddress, sizeof(sServerAddress.m_sAddress));
 	printf("Username %s sent to the server\n", strUsername);
 
-	int iConnectionSuccess = 1;
 	// Receive confirmation message from server
 	printf("Waiting for confirmation message from the server...\n");
 	recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
 	printf("%s\n", buffer);
 
 	// If the server is full the connection is refused.
+	// The client will not enter the read write loop if the conneciton fails.
 	if(strstr(buffer, "failed") != NULL)
 	{
-		// Connection failed
-		iConnectionSuccess = 0;
+		iConnectionSuccess = 0; // Connection refused
 	}
 	else
 	{
-		// Receive game session status
+		// Receive game session status if the connection was accepted
+		iConnectionSuccess = 1; // Connection accepted
+
 		printf("Waiting for game session status...\n");
 		recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
 		printf("%s\n", buffer);
 	}
 
+	// Enter read/write loop only if the connection was accepted.
 	while(iConnectionSuccess)
 	{
 		// Send guess to the server
