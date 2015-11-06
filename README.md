@@ -1,26 +1,17 @@
-# Build Ubuntu
+# Kanban Board (Testing)
+https://waffle.io/damorton/ngproject/join
 
-## IMPORTANT:
+# Trello Integration for Project
+// Add link to Trello project
 
-First install libsocket on system by copying the library into /usr/lib and changing the permissions if needed.
+# Installing Dependencies
 
-`$ cd ngproject/libsocket/`
+## Linux
 
-`$ cp libsocket.so /usr/lib`
+// Create and add install script for linux to the project
 
-`$ chmod 0755 /usr/lib/libsocket.so`
+## OSX
 
-Now update the ld cache for the linker
-
-`$ sudo ldconfig`
-
-Now build each version of the project.
-
-## Fork client/server:
-
-`$ cd ngproject/fork/<version>/Debug/`
-
-`$ make`
+// Create and add install script for linux to the project
 
 
-Building the other projects will be similar when complete. 
