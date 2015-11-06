@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/damorton/ngproject.png?label=ready&title=Ready)](https://waffle.io/damorton/ngproject)
 # Kanban Board (Testing)
 https://waffle.io/damorton/ngproject/join
 
