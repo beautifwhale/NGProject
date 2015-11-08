@@ -186,9 +186,6 @@ int ProcessRequest(int in, int out, struct Address client, struct GameSession* g
 	int word_length;
 	char hostname[MAXLEN];
 
-	socklen_t iClientSize;
-	iClientSize = sizeof(client.m_sAddress);
-
 	printf("Checking game session status...\n");
 	// No more game slots available on the server
 	if(gameSession == NULL)
