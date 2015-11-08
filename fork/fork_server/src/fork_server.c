@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
 	Listen(iListenSocketFileDescriptor, MAX_LISTEN_QUEUE_SIZE);
 
 	// signal handler for terminated processes
-	Signal(SIGCHLD, signalHandler);
+	Signal(SIGCHLD, SignalHandler);
 
 	printf("listening for connections\n");
 	for( ; ; ) {

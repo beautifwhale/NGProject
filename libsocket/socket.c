@@ -8,8 +8,8 @@ int Socket(int family, int type, int protocol)
 	int sock = socket(family, type, protocol);
 	if (sock < 0)
 	{
-		perror("Creating stream socket");
-		exit(1);
+		perror("Error in Socket()");
+		exit(1); // Exit failure
 	}
 	return sock;
 }
@@ -22,7 +22,7 @@ void Address(int family, struct Address* address, char* ipAddress, int portNumbe
 	if (address->m_sHost_info == NULL)
 	{
 		fprintf(stderr, "unknown host:%s \n", ipAddress);
-		exit(2);
+		exit(1); // Exit failure
 	}
 
 	address->m_sAddress.sin_family = address->m_sHost_info->h_addrtype; // set protocol family
@@ -42,8 +42,8 @@ void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, soc
 {
 	if (connect(socketFileDescriptor, socketAddress, socketSize) < 0)
 	{
-		perror("connecting to server");
-		exit(3);
+		perror("Error in Connect()");
+		exit(1); // Exit failure
 	}
 }
 
@@ -53,7 +53,7 @@ int Select(int maxFileDescriptorsPlus1, fd_set *readFileDescriptorSet, fd_set *w
 	if ( (n = select(maxFileDescriptorsPlus1, readFileDescriptorSet, writeFileDescriptorSet, exceptFileDescriptorSet, timeout)) < 0)
 	{
 		perror("Error in Select()");
-		exit(0);
+		exit(1); // Exit failure
 	}
 	return(n);		/* can return 0 on timeout */
 }
@@ -64,7 +64,7 @@ ssize_t Read(int fileDescriptor, void *buffer, size_t numberOfBytes)
 	if ( (n = read(fileDescriptor, buffer, numberOfBytes)) == -1)
 	{
 		perror("Error in Read()");
-		exit(0);
+		exit(1); // Exit failure
 	}
 	return(n);
 }
@@ -74,7 +74,7 @@ void Write(int fileDescriptor, void *buffer, size_t numberOfBytes)
 	if (write(fileDescriptor, buffer, numberOfBytes) != numberOfBytes)
 	{
 		perror("Error in Write()");
-		exit(0);
+		exit(1); // Exit failure
 	}
 }
 
@@ -83,7 +83,7 @@ void Shutdown(int fileDescriptor, int shutdownOption)
 	if (shutdown(fileDescriptor, shutdownOption) < 0)
 	{
 		perror("Error in Shutdown()");
-		exit(0);
+		exit(1); // Exit failure
 	}
 }
 
@@ -92,19 +92,23 @@ int Max(int x, int y)
 	return ( x < y ) ? y : x;
 }
 
-void Signal(int signalNumber, void* signalHandler)
+void Signal(int signalNumber, void* SignalHandler)
 {
-	signal(SIGCHLD, signalHandler);
+	if(signal(SIGCHLD, SignalHandler) == SIG_ERR)
+	{
+		perror("Error in Signal()");
+		exit(1); // Exit failure
+	}
 }
 
-void signalHandler(int signalNumber)
+void SignalHandler(int signalNumber)
 {
 	pid_t processID;
 	int stat;
 
-	while( (processID = waitpid(-1, &stat, WNOHANG)) > 0)
+	while( (processID = waitpid(WAIT_ANY, &stat, WNOHANG)) > 0)
 	{
-		//printf("child terminated\n");
+		printf("child terminated\n");
 	}
 	return;
 }
@@ -112,14 +116,18 @@ void signalHandler(int signalNumber)
 void Bind(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize)
 {
 	if (bind(socketFileDescriptor, socketAddress, socketSize) < 0) {
-		perror("binding socket");
-		exit(2);
+		perror("Error in Bind()");
+		exit(1); // Exit failure
 	}
 }
 
 void Listen(int socketFileDescriptor, int maxListenQSize)
 {
-	listen(socketFileDescriptor, maxListenQSize);
+	if(listen(socketFileDescriptor, maxListenQSize) < 0)
+	{
+		perror("Error in Listen()");
+		exit(1); // Exit failure
+	}
 }
 
 void MultiplexStdinFileDescriptor(FILE* fp, int socketFileDescriptor)

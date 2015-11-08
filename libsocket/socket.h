@@ -9,27 +9,32 @@
 #include <stdlib.h> // exit(),
 #include <unistd.h> // read(), write(), fork()
 
+// Max buffer size used for the read buffer of file descriptors
 #define MAX_BUF_SIZE 4096
 #define MAX_LISTEN_QUEUE_SIZE 1024
 
+// Used to store addressing information and populated
+// by the Address() wrapper function.
 struct Address{
-	struct sockaddr_in m_sAddress; /* Address assembled here */
-	struct hostent * m_sHost_info;
+	struct sockaddr_in m_sAddress; // Address assembled here
+	struct hostent * m_sHost_info; // Host information
 };
 
-// Socket creates a socket based on the family, type, and protocol parameters passed in.
-// Errors are also handled if the call to socket fails.
+// Socket() creates a socket based on the family, type,
+// and protocol parameters passed in. Errors are also handled
+// if the call to socket fails.
 int Socket(int family, int type, int protocol);
 
 // Populates an Address object with information relative to the ipAddress given as a parameter.
-// The port number and address family is also set in the Address object.
+// The port number and address family are also set in the Address object.
 void Address(int family, struct Address* address, char* ipAddress, int portNumber);
 
 // Facilitates IPv4 and IPv6 addressing compatibility and handles any errors that may occur.
+// TODO explain function once implemented
 void AddressIPX(const char* nodeAddress, const char* service, const struct addrinfo* hints, struct addrinfo** result);
 
-// Attempts to connect to the peer address using the socket file descriptor. Connect
-// will also handle any errors that occur
+// Attempts to connect to the peer address, on success will write to the socket file descriptor passed
+// in as a parameter. Connect will also handle any errors that occur during the connection attempt.
 void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize);
 
 // Select wraps the select function call and handles any errors that may occur.
@@ -38,11 +43,12 @@ void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, soc
 // returning from the function. Select will multiplex I/O from many s
 int Select(int maxFileDescriptorsPlus1, fd_set *readFileDescriptorSet, fd_set *writeFileDescriptorSet, fd_set *exceptFileDescriptorSet, struct timeval *timeout);
 
+// Read
 ssize_t Read(int fileDescriptor, void *buffer, size_t numberOfBytes);
 void Write(int fileDescriptor, void *buffer, size_t numberOfBytes);
 void Shutdown(int fileDescriptor, int shutdownOption);
 int Max(int x, int y);
-void signalHandler(int signalNumber);
+void SignalHandler(int signalNumber);
 void Signal(int signalNumber, void* signalHandler);
 void Bind(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize);
 void Listen(int socketFileDescriptor, int maxListenQSize);
