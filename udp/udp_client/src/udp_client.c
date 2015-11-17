@@ -12,6 +12,12 @@ int main(int argc, char * argv[])
 	struct Address sServerAddress;
 	struct Address sClientAddress;
 
+ 	if (argc != 3)
+  	{
+      		printf("usage:  udpclient <IP address> <userName>\n");
+      		exit(1);
+   	}
+
 	strServerIPAddress = argv[1];
 	strClientIPAddress = "0.0.0.0";
 

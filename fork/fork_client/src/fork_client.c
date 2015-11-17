@@ -6,6 +6,11 @@ int main(int argc, char * argv[]) {
 	char * strServerIPAddress;
 	struct Address sAddress;
 
+	if (argc != 2)
+   	{
+      		printf("usage:  udpclient <IP address>\n");
+     		exit(1);
+   	}
 	strServerIPAddress = argv[1];
 
 	iSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
