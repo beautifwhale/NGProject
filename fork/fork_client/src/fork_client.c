@@ -1,3 +1,18 @@
+// fork_client.c
+// 
+// Year 4 Networked Games Assignment 2015
+// Team:	David Morton
+//		Kevin Byrne
+// 		add names here...
+//
+// 
+//
+// Description: The fork client uses the libsocket library to communicate with the 
+// server running the Hangman game. The client will initiate a connection with the server using
+// the wrapper functions provided by the libsocket library. Once a connection is set up inputs 
+// from the user and the network socket are multiplexed using the select() function inside the 
+// call to MultiplexStdinFileDescriptor(). Implementations for each function call in the client 
+// can be found in the libsocket socket.c file.
 #include "../../../libsocket/socket.h"
 #include "../includes/definitions.h"
 
@@ -19,6 +34,9 @@ int main(int argc, char * argv[]) {
 
 	Connect(iSocketFileDescriptor, (struct sockaddr*) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
+	// Wrapper function to multiplex user input and network input on the 
+	// socket file descriptor. MultiplexStdinFileDescriptor() implementation
+	// can be found in the libsocket socket.c file.
 	MultiplexStdinFileDescriptor(stdin, iSocketFileDescriptor);
 
 	printf("Game over");
