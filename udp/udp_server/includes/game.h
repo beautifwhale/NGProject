@@ -35,7 +35,7 @@ struct GameSession{
 	int iSessionId;
 };
 
-#define MAX_GAME_SESSIONS 1
+#define MAX_GAME_SESSIONS 10
 
 struct GameSession gameSessions[MAX_GAME_SESSIONS];
 
