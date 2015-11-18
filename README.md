@@ -7,12 +7,17 @@ https://waffle.io/damorton/ngproject/join
 
 # Installing Dependencies
 
-## Linux
+## Linux/OSX
 
-// Create and add install script for linux to the project
+Run install.sh
 
-## OSX
+This will build the libsocket library and install it in the /usr/lib folder on the system. The fork client and server, select client and server, and udp client and server will also build. 
 
-// Create and add install script for linux to the project
+# Running the project
+
+For each version of the project navigate to the src/ folder. 
+Run binary using ./
+
+  e.g ~/ngproject/udp/udp_client/src/clientUDP 127.0.0.1 David
 
 
