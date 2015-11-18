@@ -13,6 +13,7 @@
 // from the user and the network socket are multiplexed using the select() function inside the 
 // call to MultiplexStdinFileDescriptor(). Implementations for each function call in the client 
 // can be found in the libsocket socket.c file.
+//
 #include "../../../libsocket/socket.h"
 #include "../includes/definitions.h"
 
