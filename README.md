@@ -11,10 +11,10 @@ This will build the libsocket library and install it in the /usr/lib folder on t
 For each version of the project navigate to the src/ folder. 
 Run server binary first and then client with parameters using ./
 
-'''
+```
 cd ngproject/udp/udp_client/src/
 ./clientUDP <server-ipaddress> <username>
-'''
+```
 
 
 # Testing (Project Management)
