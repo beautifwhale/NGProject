@@ -1,7 +1,7 @@
 /*
  * Hangclient.c - Client for hangman server.
  *
- * @author	David Morton, add names here...
+ * @author	David Morton, Kevin Byrne
  * @date	4.10.2015
 */
 #include "../includes/Definitions.h"
