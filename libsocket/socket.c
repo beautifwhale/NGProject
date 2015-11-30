@@ -33,7 +33,7 @@ void Address(int family, struct Address* address, char* ipAddress, int portNumbe
 	address->m_sAddress.sin_port = htons(portNumber); // set server port number
 }
 
-int Connection(char *address, char *service, int type /* Client or Server */)
+int Connection(char *hostname, char *service /* Port number */, int type /* Client or Server */, int protocol /* UDP or TCP */)
 {
 	int sockFileDescriptor;
 	struct addrinfo hints;
@@ -42,13 +42,13 @@ int Connection(char *address, char *service, int type /* Client or Server */)
 	int errorReturnValue;
 
 	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_UNSPEC; // use AF_INET6 to force IPv6
-	hints.ai_socktype = SOCK_DGRAM;
+	hints.ai_family = AF_UNSPEC; // use either IPv4 or IPv6
+	hints.ai_socktype = protocol; // UDP / TCP
 
 	if(type == TYPE_CLIENT)
 	{
 		// For clients use the hostname passed in as a parameter
-		if ((errorReturnValue = getaddrinfo(address, service, &hints, &result)) != 0) {
+		if ((errorReturnValue = getaddrinfo(hostname, service, &hints, &result)) != 0) {
 			fprintf(stderr, "Connection() : getaddrinfo(): %s\n", gai_strerror(errorReturnValue));
 			exit(1);
 		}
