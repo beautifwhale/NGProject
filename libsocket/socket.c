@@ -213,7 +213,7 @@ void Listen(int socketFileDescriptor, int maxListenQSize)
 	}
 }
 
-void MultiplexStdinFileDescriptor(FILE* fp, int socketFileDescriptor)
+void MultiplexIO(FILE* fp, int socketFileDescriptor)
 {
 	int maxFileDescriptorsPlus1;
 	int stdinEOF = 0;
