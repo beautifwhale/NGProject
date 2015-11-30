@@ -2,8 +2,8 @@
 // 
 // Year 4 Networked Games Assignment 2015
 // Team:	David Morton
-//		Kevin Byrne
-// 		add names here...
+//			Kevin Byrne
+// 			add names here...
 //
 // 
 //
