@@ -47,34 +47,43 @@ int Connection(char *address, char *service, int type /* Client or Server */)
 
 	if(type == TYPE_CLIENT)
 	{
+		// For clients use the hostname passed in as a parameter
 		if ((errorReturnValue = getaddrinfo(address, service, &hints, &result)) != 0) {
 			fprintf(stderr, "Connection() : getaddrinfo(): %s\n", gai_strerror(errorReturnValue));
 			exit(1);
 		}
-	}else if(type == TYPE_SERVER)
+	}
+	else if(type == TYPE_SERVER)
 	{
+		// For servers set flags to passive to signify using this hosts name or to listen for
+		// all incoming connections from clients.
 		hints.ai_flags = AI_PASSIVE; // use my IP address
 
+		// Use NULL with getaddrinfo() to listen for all incoming connections
 		if ((errorReturnValue = getaddrinfo(NULL, service, &hints, &result)) != 0) {
 		    fprintf(stderr, "Connection() : getaddrinfo(): %s\n", gai_strerror(errorReturnValue));
 		    exit(1); // Exit failure
 		}
-	}else
+	}
+	else
 	{
+		// Application type unspecified TYPE_CLIENT / TYPE_SERVER
+		printf("Error in Connection() application type unspecified\n");
 		return -1;
 	}
 
 	// Loop through each result in the addrinfo struct and connect to the first one available
 	for(tempAddrInfo = result; tempAddrInfo != NULL; tempAddrInfo = tempAddrInfo->ai_next) {
-	    if ((sockFileDescriptor = socket(tempAddrInfo->ai_family, tempAddrInfo->ai_socktype,
-	    		tempAddrInfo->ai_protocol)) == -1) {
+	    if ((sockFileDescriptor = socket(tempAddrInfo->ai_family, tempAddrInfo->ai_socktype, tempAddrInfo->ai_protocol)) == -1) {
 	        perror("Connection() : socket()");
 	        continue;
 	    }
 
-	    // For clients use connect(); For servers use bind()
+	    // For each possible connection perform the appropriate connection
+	    // process based on application type
 	    if(type == TYPE_CLIENT)
 	    {
+		    // For clients use connect()
 			if (connect(sockFileDescriptor, tempAddrInfo->ai_addr, tempAddrInfo->ai_addrlen) == -1) {
 				close(sockFileDescriptor);
 				perror("Connection() : connect()");
@@ -83,6 +92,7 @@ int Connection(char *address, char *service, int type /* Client or Server */)
 	    }
 	    else if(type == TYPE_SERVER)
 	    {
+	    	// For servers use bind()
 	    	if (bind(sockFileDescriptor, tempAddrInfo->ai_addr, tempAddrInfo->ai_addrlen) == -1) {
 				close(sockFileDescriptor);
 				perror("Connection() : bind()");
@@ -91,7 +101,8 @@ int Connection(char *address, char *service, int type /* Client or Server */)
 	    }
 	    else
 	    {
-	    	// type unspecified
+	    	// Application type unspecified TYPE_CLIENT / TYPE_SERVER
+			printf("Error in Connection() application type unspecified\n");
 	    	return -1;
 	    }
 
@@ -105,6 +116,8 @@ int Connection(char *address, char *service, int type /* Client or Server */)
 	    exit(2);
 	}
 
+	// Free the addrinfo struct after using it to store peer information
+	freeaddrinfo(result);
 	return sockFileDescriptor;
 }
 
