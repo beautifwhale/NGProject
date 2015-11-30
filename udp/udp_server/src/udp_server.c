@@ -6,18 +6,14 @@
 int main(int argc, char* argv[]) {
 	int iListenSocketFileDescriptor;
 
-
+	// Create Address struct to store client information
 	struct Address sClientAddress;
 	sClientAddress.sendsize = sizeof(sClientAddress.sender);
 	bzero(&sClientAddress.sender, sizeof(sClientAddress.sender));
 
-	struct sockaddr_storage sender;
-	socklen_t sendsize = sizeof(sender);
-	bzero(&sender, sizeof(sender));
-
+	// Create GameSession struct to store clients game session data
 	struct GameSession *gameSession;
-	socklen_t iClientAddrLen;
-	char* buffer[MAX_BUF_SIZE];
+	char buffer[MAX_BUF_SIZE];
 
 	printf("Server initialising...\n");
 
@@ -27,8 +23,6 @@ int main(int argc, char* argv[]) {
 	// Create a connection; Using NULL address to listen for all incoming
 	// connections to server. Server port number 1071 and type TYPE_SERVER
 	iListenSocketFileDescriptor = Connection(NULL, "1071", TYPE_SERVER);
-
-	iClientAddrLen = sizeof(sClientAddress.m_sAddress);
 
 	while(1)
 	{
