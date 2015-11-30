@@ -29,13 +29,13 @@ all: udp_client
 udp_client: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C Linker'
-	gcc -L"/home/david/projects/workspace/ngproject/libsocket" -o "udp_client" $(OBJS) $(USER_OBJS) $(LIBS)
+	gcc -L"/Users/mortond/Documents/workspace/raig/libsocket" -o "udp_client" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS)$(C_DEPS)$(EXECUTABLES) udp_client
+	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) udp_client
 	-@echo ' '
 
 .PHONY: all clean dependents

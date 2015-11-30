@@ -33,9 +33,79 @@ void Address(int family, struct Address* address, char* ipAddress, int portNumbe
 	address->m_sAddress.sin_port = htons(portNumber); // set server port number
 }
 
-void AddressIPX(const char* nodeAddress, const char* service, const struct addrinfo* hints, struct addrinfo** result)
+int Connection(char *address, char *service, int type /* Client or Server */)
 {
-	// getaddrinfo()
+	int sockFileDescriptor;
+	struct addrinfo hints;
+	struct addrinfo *result;
+	struct addrinfo *tempAddrInfo;
+	int errorReturnValue;
+
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_UNSPEC; // use AF_INET6 to force IPv6
+	hints.ai_socktype = SOCK_DGRAM;
+
+	if(type == TYPE_CLIENT)
+	{
+		if ((errorReturnValue = getaddrinfo(address, service, &hints, &result)) != 0) {
+			fprintf(stderr, "Connection() : getaddrinfo(): %s\n", gai_strerror(errorReturnValue));
+			exit(1);
+		}
+	}else if(type == TYPE_SERVER)
+	{
+		hints.ai_flags = AI_PASSIVE; // use my IP address
+
+		if ((errorReturnValue = getaddrinfo(NULL, service, &hints, &result)) != 0) {
+		    fprintf(stderr, "Connection() : getaddrinfo(): %s\n", gai_strerror(errorReturnValue));
+		    exit(1); // Exit failure
+		}
+	}else
+	{
+		return -1;
+	}
+
+	// Loop through each result in the addrinfo struct and connect to the first one available
+	for(tempAddrInfo = result; tempAddrInfo != NULL; tempAddrInfo = tempAddrInfo->ai_next) {
+	    if ((sockFileDescriptor = socket(tempAddrInfo->ai_family, tempAddrInfo->ai_socktype,
+	    		tempAddrInfo->ai_protocol)) == -1) {
+	        perror("Connection() : socket()");
+	        continue;
+	    }
+
+	    // For clients use connect(); For servers use bind()
+	    if(type == TYPE_CLIENT)
+	    {
+			if (connect(sockFileDescriptor, tempAddrInfo->ai_addr, tempAddrInfo->ai_addrlen) == -1) {
+				close(sockFileDescriptor);
+				perror("Connection() : connect()");
+				continue;
+			}
+	    }
+	    else if(type == TYPE_SERVER)
+	    {
+	    	if (bind(sockFileDescriptor, tempAddrInfo->ai_addr, tempAddrInfo->ai_addrlen) == -1) {
+				close(sockFileDescriptor);
+				perror("Connection() : bind()");
+				continue;
+			}
+	    }
+	    else
+	    {
+	    	// type unspecified
+	    	return -1;
+	    }
+
+	    // Connection successful :)
+	    break;
+	}
+
+	if (tempAddrInfo == NULL) {
+	    // No connections found for the peer
+	    fprintf(stderr, "No connections found. Failed to Connect\n");
+	    exit(2);
+	}
+
+	return sockFileDescriptor;
 }
 
 void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize)
