@@ -20,6 +20,11 @@ struct Address{
 	struct hostent * m_sHost_info; // Host information
 };
 
+enum eAppType{
+	TYPE_CLIENT,
+	TYPE_SERVER
+};
+
 // Socket() creates a socket based on the family, type,
 // and protocol parameters passed in. Errors are also handled
 // if the call to socket fails.
@@ -30,9 +35,7 @@ int Socket(int family, int type, int protocol);
 void Address(int family, struct Address* address, char* ipAddress, int portNumber);
 
 // Facilitates IPv4 and IPv6 addressing compatibility and handles any errors that may occur.
-// TODO explain function once implemented
-void AddressIPX(const char* nodeAddress, const char* service, const struct addrinfo* hints, struct addrinfo** result);
-
+int Connection(char *address, char *service, int type /* Client or Server */, struct addrinfo *connectionInfo);
 // Attempts to connect to the peer address, on success will write to the socket file descriptor passed
 // in as a parameter. Connect will also handle any errors that occur during the connection attempt.
 void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize);

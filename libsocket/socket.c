@@ -33,9 +33,76 @@ void Address(int family, struct Address* address, char* ipAddress, int portNumbe
 	address->m_sAddress.sin_port = htons(portNumber); // set server port number
 }
 
-void AddressIPX(const char* nodeAddress, const char* service, const struct addrinfo* hints, struct addrinfo** result)
+int Connection(char *address, char *service, int type /* Client or Server */, struct addrinfo *connectionInfo)
 {
-	// getaddrinfo()
+	int sockfd;
+	struct addrinfo hints, *result, *p;
+	int rv;
+
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_UNSPEC; // use AF_INET6 to force IPv6
+	hints.ai_socktype = SOCK_DGRAM;
+
+	if(type == TYPE_CLIENT)
+	{
+		if ((rv = getaddrinfo(address, service, &hints, &result)) != 0) {
+			fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+			exit(1);
+		}
+	}else if(type == TYPE_SERVER)
+	{
+		hints.ai_flags = AI_PASSIVE; // use my IP address
+
+		if ((rv = getaddrinfo(NULL, service, &hints, &result)) != 0) {
+		    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+		    exit(1);
+		}
+	}else
+	{
+		return -1;
+	}
+
+	// loop through all the results and connect to the first we can
+	for(p = result; p != NULL; p = p->ai_next) {
+	    if ((sockfd = socket(p->ai_family, p->ai_socktype,
+	            p->ai_protocol)) == -1) {
+	        perror("socket");
+	        continue;
+	    }
+
+	    if(type == TYPE_CLIENT)
+	    {
+			if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+				close(sockfd);
+				perror("connect");
+				continue;
+			}
+	    }
+	    else if(type == TYPE_SERVER)
+	    {
+	    	if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+				close(sockfd);
+				perror("bind");
+				continue;
+			}
+	    }
+	    else
+	    {
+	    	// type unspecified
+	    	return -1;
+	    }
+
+	    break; // if we get here, we must have connected successfully
+	}
+
+	if (p == NULL) {
+	    // looped off the end of the list with no connection
+	    fprintf(stderr, "failed to connect\n");
+	    exit(2);
+	}
+
+	// Connection successful
+	return sockfd;
 }
 
 void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize)

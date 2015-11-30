@@ -21,13 +21,14 @@ int main(int argc, char* argv[]) {
 
 	printf("Server initialising...\n");
 
-	iListenSocketFileDescriptor = Socket(AF_INET, SOCK_DGRAM, 0);
+	iListenSocketFileDescriptor = Connection(strServerIPAddress, "1071", TYPE_SERVER, NULL);
+	//iListenSocketFileDescriptor = Socket(AF_INET, SOCK_DGRAM, 0);
 
 	// Use command line input to pass in the hostname and service port number.
 	// AddressIPX("www.google.com", "1071", struct addrinfo *hints, struct addrinfo** result);
-	Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
+	//Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 
-	Bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
+	//Bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
 	iClientAddrLen = sizeof(sClientAddress.m_sAddress);
 

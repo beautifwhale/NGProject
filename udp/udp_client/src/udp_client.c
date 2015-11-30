@@ -32,13 +32,12 @@ int main(int argc, char * argv[])
 	// Connection to server is active initially.
 	int iConnectionSuccess = 1;
 
+	//iSocketFileDescriptor = Connection(strServerIPAddress, "1071", TYPE_CLIENT);
 
 	iSocketFileDescriptor = Socket(AF_INET, SOCK_DGRAM, 0);
 
 	Address(AF_INET, (struct Address*) &sClientAddress, strClientIPAddress, 0);
 	Address(AF_INET, (struct Address*) &sServerAddress, strServerIPAddress, HANGMAN_TCP_PORT);
-
-	Bind(iSocketFileDescriptor, (struct sockaddr *) &sClientAddress.m_sAddress, sizeof(sClientAddress.m_sAddress));
 
 	iServerAddrSize = sizeof(sServerAddress.m_sAddress);
 
