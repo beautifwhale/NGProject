@@ -10,11 +10,13 @@ int main(int argc, char * argv[])
 	char* strClientIPAddress;
 
 	struct Address sServerAddress;
+	sServerAddress.sendsize = sizeof(sServerAddress.sender);
+	bzero(&sServerAddress.sender, sizeof(sServerAddress.sender));
 
  	if (argc != 3)
   	{
-      		printf("usage:  udpclient <IP address> <userName>\n");
-      		exit(1);
+		printf("usage:  udpclient <IP address> <userName>\n");
+		exit(1);
    	}
 
 	strServerIPAddress = argv[1];
@@ -31,7 +33,6 @@ int main(int argc, char * argv[])
 	// Connection to server is active initially.
 	int iConnectionSuccess = 1;
 
-
 	iSocketFileDescriptor = Connection(strServerIPAddress, "1071", TYPE_CLIENT);
 
 	iServerAddrSize = sizeof(sServerAddress.m_sAddress);
@@ -43,7 +44,7 @@ int main(int argc, char * argv[])
 
 	// Receive confirmation message from server
 	printf("Waiting for confirmation message from the server...\n");
-	recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
+	recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
 	printf("%s\n", buffer);
 
 	// If the server is full the connection is refused.
@@ -58,7 +59,7 @@ int main(int argc, char * argv[])
 		iConnectionSuccess = 1; // Connection accepted
 
 		printf("Waiting for game session status...\n");
-		recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
+		recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
 		printf("%s\n", buffer);
 	}
 
@@ -74,7 +75,7 @@ int main(int argc, char * argv[])
 
 		// Receive reply from server
 		printf("waiting for reply from the server...\n");
-		recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.m_sAddress, &iServerAddrSize);
+		recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
 		printf("%s\n", buffer);
 
 		// If the servers reply contains 'won' or 'lost' break and close the socket.

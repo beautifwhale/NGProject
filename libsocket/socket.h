@@ -18,6 +18,8 @@
 struct Address{
 	struct sockaddr_in m_sAddress; // Address assembled here
 	struct hostent * m_sHost_info; // Host information
+	struct sockaddr_storage sender;
+	socklen_t sendsize;
 };
 
 enum eAppType{

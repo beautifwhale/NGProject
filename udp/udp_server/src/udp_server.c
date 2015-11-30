@@ -5,7 +5,16 @@
 
 int main(int argc, char* argv[]) {
 	int iListenSocketFileDescriptor;
+
+
 	struct Address sClientAddress;
+	sClientAddress.sendsize = sizeof(sClientAddress.sender);
+	bzero(&sClientAddress.sender, sizeof(sClientAddress.sender));
+
+	struct sockaddr_storage sender;
+	socklen_t sendsize = sizeof(sender);
+	bzero(&sender, sizeof(sender));
+
 	struct GameSession *gameSession;
 	socklen_t iClientAddrLen;
 	char* buffer[MAX_BUF_SIZE];
@@ -15,6 +24,8 @@ int main(int argc, char* argv[]) {
 	// Initialize all game sessions
 	InitGameSessions();
 
+	// Create a connection; Using NULL address to listen for all incoming
+	// connections to server. Server port number 1071 and type TYPE_SERVER
 	iListenSocketFileDescriptor = Connection(NULL, "1071", TYPE_SERVER);
 
 	iClientAddrLen = sizeof(sClientAddress.m_sAddress);
@@ -22,7 +33,7 @@ int main(int argc, char* argv[]) {
 	while(1)
 	{
 		printf("waiting for message from the client...\n");
-		if(recvfrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress, &iClientAddrLen) == 0)
+		if(recvfrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress.m_sAddress, &iClientAddrLen) == 0)
 		{
 			printf("Client has closed connection\n");
 			continue;
