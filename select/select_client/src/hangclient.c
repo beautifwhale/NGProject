@@ -1,16 +1,20 @@
 /*
  * Hangclient.c - Client for hangman server.
  *
- * @author	David Morton, Kevin Byrne
+ * @author	David Morton, Kevin Byrne, Derek O Brien
  * @date	4.10.2015
 */
 #include "../includes/Definitions.h"
-#include "../../../libsocket/Sockets.h"
+#include "../../../libsocket/socket.h"
 
 int main(int argc, char * argv[]) {
 	int iSocketFileDescriptor;
 	char * strServerIPAddress;
 	struct Address sAddress;
+	char*  username;
+	username = argv[2];
+
+	char buffer[MAX_BUF_SIZE];
 
 	strServerIPAddress = argv[1];
 
@@ -20,7 +24,11 @@ int main(int argc, char * argv[]) {
 
 	Connect(iSocketFileDescriptor, (struct sockaddr*) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
-	multiplexStdinFileDescriptor(stdin, iSocketFileDescriptor);
+	sprintf(buffer, "%s ", username);
+	Write(iSocketFileDescriptor, &buffer, strlen(buffer) +1);
+	printf("Username %s sent to the server\n", buffer);
+
+	MultiplexStdinFileDescriptor(stdin, iSocketFileDescriptor);
 
 	printf("Game over");
 	return 0;

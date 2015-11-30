@@ -137,7 +137,7 @@ int main(int argc, char* argv[]) {
 
 				if ((nbytes = read(read_socket, buffer, sizeof(buffer))) == 0) {
 
-					printf("Socket %d Closed \n", read_socket);
+					printf("Socket %d Closed \n", sd);
 					//Close the socket and mark as 0 in list for reuse
 					close(read_socket);
 					client_socket[i] = 0;

@@ -70,7 +70,7 @@ void EndGameSession(struct GameSession *gameSession) {
 	strcpy(gameSession->strUsername, "null");
 	gameSession->cGameState = 'U';
 	gameSession->iSequenceNumber = 0;
-	gameSession->iSessionId = 0;
+	gameSessions[i].iSessionId = 0;
 }
 
 struct GameSession *FindGameSession(int fd) {
