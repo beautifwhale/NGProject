@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		// ProcessRequest from client and return to check next message
-		if(ProcessRequest(iListenSocketFileDescriptor, iListenSocketFileDescriptor, sClientAddress, gameSession, message) == -1)
+		if(ProcessRequest(iListenSocketFileDescriptor, sClientAddress, gameSession, message) == -1)
 		{
 			printf("End game session and remove from memory\n");
 			if(gameSession)

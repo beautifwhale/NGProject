@@ -45,7 +45,7 @@ void PrintActiveGameSessions();
 void PrintGameSession(struct GameSession *gameSession);
 struct GameSession *FindGameSession(char* username);
 void play_hangman(int in, int out, struct Address client, struct GameSession* gameSession);
-int ProcessRequest(int in, int out, struct Address client, struct GameSession* gameSession, char* message);
+int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameSession* gameSession, char* message);
 void EndGameSession(struct GameSession *gameSession);
 
 
