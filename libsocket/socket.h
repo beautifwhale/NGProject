@@ -35,7 +35,8 @@ int Socket(int family, int type, int protocol);
 void Address(int family, struct Address* address, char* ipAddress, int portNumber);
 
 // Facilitates IPv4 and IPv6 addressing compatibility and handles any errors that may occur.
-int Connection(char *address, char *service, int type /* Client or Server */, struct addrinfo *connectionInfo);
+int Connection(char *address, char *service, int type /* Client or Server */);
+
 // Attempts to connect to the peer address, on success will write to the socket file descriptor passed
 // in as a parameter. Connect will also handle any errors that occur during the connection attempt.
 void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize);

@@ -10,7 +10,6 @@ int main(int argc, char * argv[])
 	char* strClientIPAddress;
 
 	struct Address sServerAddress;
-	struct Address sClientAddress;
 
  	if (argc != 3)
   	{
@@ -32,18 +31,14 @@ int main(int argc, char * argv[])
 	// Connection to server is active initially.
 	int iConnectionSuccess = 1;
 
-	//iSocketFileDescriptor = Connection(strServerIPAddress, "1071", TYPE_CLIENT);
 
-	iSocketFileDescriptor = Socket(AF_INET, SOCK_DGRAM, 0);
-
-	Address(AF_INET, (struct Address*) &sClientAddress, strClientIPAddress, 0);
-	Address(AF_INET, (struct Address*) &sServerAddress, strServerIPAddress, HANGMAN_TCP_PORT);
+	iSocketFileDescriptor = Connection(strServerIPAddress, "1071", TYPE_CLIENT);
 
 	iServerAddrSize = sizeof(sServerAddress.m_sAddress);
 
 	// Send Username to server
 	sprintf(buffer, "%s_ ", strUsername);
-	sendto(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0, (struct sockaddr*) &sServerAddress, sizeof(sServerAddress.m_sAddress));
+	send(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
 	printf("Username %s sent to the server\n", strUsername);
 
 	// Receive confirmation message from server
@@ -75,7 +70,7 @@ int main(int argc, char * argv[])
 		fgets(userInput, sizeof(userInput), stdin);
 		sprintf(buffer, "%s_%s", strUsername, userInput);
 		printf("Sending: %s", buffer);
-		sendto(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0, (struct sockaddr*) &sServerAddress, sizeof(sServerAddress.m_sAddress));
+		send(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
 
 		// Receive reply from server
 		printf("waiting for reply from the server...\n");

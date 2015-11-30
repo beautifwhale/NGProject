@@ -33,11 +33,13 @@ void Address(int family, struct Address* address, char* ipAddress, int portNumbe
 	address->m_sAddress.sin_port = htons(portNumber); // set server port number
 }
 
-int Connection(char *address, char *service, int type /* Client or Server */, struct addrinfo *connectionInfo)
+int Connection(char *address, char *service, int type /* Client or Server */)
 {
-	int sockfd;
-	struct addrinfo hints, *result, *p;
-	int rv;
+	int sockFileDescriptor;
+	struct addrinfo hints;
+	struct addrinfo *result;
+	struct addrinfo *tempAddrInfo;
+	int errorReturnValue;
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC; // use AF_INET6 to force IPv6
@@ -45,44 +47,45 @@ int Connection(char *address, char *service, int type /* Client or Server */, st
 
 	if(type == TYPE_CLIENT)
 	{
-		if ((rv = getaddrinfo(address, service, &hints, &result)) != 0) {
-			fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+		if ((errorReturnValue = getaddrinfo(address, service, &hints, &result)) != 0) {
+			fprintf(stderr, "Connection() : getaddrinfo(): %s\n", gai_strerror(errorReturnValue));
 			exit(1);
 		}
 	}else if(type == TYPE_SERVER)
 	{
 		hints.ai_flags = AI_PASSIVE; // use my IP address
 
-		if ((rv = getaddrinfo(NULL, service, &hints, &result)) != 0) {
-		    fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-		    exit(1);
+		if ((errorReturnValue = getaddrinfo(NULL, service, &hints, &result)) != 0) {
+		    fprintf(stderr, "Connection() : getaddrinfo(): %s\n", gai_strerror(errorReturnValue));
+		    exit(1); // Exit failure
 		}
 	}else
 	{
 		return -1;
 	}
 
-	// loop through all the results and connect to the first we can
-	for(p = result; p != NULL; p = p->ai_next) {
-	    if ((sockfd = socket(p->ai_family, p->ai_socktype,
-	            p->ai_protocol)) == -1) {
-	        perror("socket");
+	// Loop through each result in the addrinfo struct and connect to the first one available
+	for(tempAddrInfo = result; tempAddrInfo != NULL; tempAddrInfo = tempAddrInfo->ai_next) {
+	    if ((sockFileDescriptor = socket(tempAddrInfo->ai_family, tempAddrInfo->ai_socktype,
+	    		tempAddrInfo->ai_protocol)) == -1) {
+	        perror("Connection() : socket()");
 	        continue;
 	    }
 
+	    // For clients use connect(); For servers use bind()
 	    if(type == TYPE_CLIENT)
 	    {
-			if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-				close(sockfd);
-				perror("connect");
+			if (connect(sockFileDescriptor, tempAddrInfo->ai_addr, tempAddrInfo->ai_addrlen) == -1) {
+				close(sockFileDescriptor);
+				perror("Connection() : connect()");
 				continue;
 			}
 	    }
 	    else if(type == TYPE_SERVER)
 	    {
-	    	if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-				close(sockfd);
-				perror("bind");
+	    	if (bind(sockFileDescriptor, tempAddrInfo->ai_addr, tempAddrInfo->ai_addrlen) == -1) {
+				close(sockFileDescriptor);
+				perror("Connection() : bind()");
 				continue;
 			}
 	    }
@@ -92,17 +95,17 @@ int Connection(char *address, char *service, int type /* Client or Server */, st
 	    	return -1;
 	    }
 
-	    break; // if we get here, we must have connected successfully
+	    // Connection successful :)
+	    break;
 	}
 
-	if (p == NULL) {
-	    // looped off the end of the list with no connection
-	    fprintf(stderr, "failed to connect\n");
+	if (tempAddrInfo == NULL) {
+	    // No connections found for the peer
+	    fprintf(stderr, "No connections found. Failed to Connect\n");
 	    exit(2);
 	}
 
-	// Connection successful
-	return sockfd;
+	return sockFileDescriptor;
 }
 
 void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize)

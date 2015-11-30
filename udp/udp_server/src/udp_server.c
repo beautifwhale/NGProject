@@ -5,30 +5,17 @@
 
 int main(int argc, char* argv[]) {
 	int iListenSocketFileDescriptor;
-	char * strServerIPAddress;
-	struct Address sAddress;
 	struct Address sClientAddress;
-
 	struct GameSession *gameSession;
-
-	// Initialize all game sessions
-	InitGameSessions();
-
-	strServerIPAddress = "0.0.0.0";
-
 	socklen_t iClientAddrLen;
 	char* buffer[MAX_BUF_SIZE];
 
 	printf("Server initialising...\n");
 
-	iListenSocketFileDescriptor = Connection(strServerIPAddress, "1071", TYPE_SERVER, NULL);
-	//iListenSocketFileDescriptor = Socket(AF_INET, SOCK_DGRAM, 0);
+	// Initialize all game sessions
+	InitGameSessions();
 
-	// Use command line input to pass in the hostname and service port number.
-	// AddressIPX("www.google.com", "1071", struct addrinfo *hints, struct addrinfo** result);
-	//Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
-
-	//Bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
+	iListenSocketFileDescriptor = Connection(NULL, "1071", TYPE_SERVER);
 
 	iClientAddrLen = sizeof(sClientAddress.m_sAddress);
 
