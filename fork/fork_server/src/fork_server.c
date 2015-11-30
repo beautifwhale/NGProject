@@ -23,7 +23,7 @@
 
 int main(int argc, char* argv[]) {
 	int iListenSocketFileDescriptor;
-	char * strServerIPAddress;
+	char *strServerIPAddress;
 	struct Address sAddress;
 	pid_t childProcessID;
 	int connfd;
@@ -33,15 +33,18 @@ int main(int argc, char* argv[]) {
 
 	printf("Server: initialising\n");
 
-	iListenSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
-	
+	// Old version using gethostbyname()
+	//iListenSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
 	// TODO Create wrapper for Address() that will allow IPv4 and IPv6 connections.
 	// Use command line input to pass in the hostname and service port number.
 	// AddressIPX("www.google.com", "1071", struct addrinfo *hints, struct addrinfo** result);
-	Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
+	//Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
+	//Bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
-	Bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
+	// Create a connection for the server
+	iListenSocketFileDescriptor = Connection(NULL, "1071", TYPE_SERVER, SOCK_STREAM);
 
+	// Listen for incoming TCP connections
 	Listen(iListenSocketFileDescriptor, MAX_LISTEN_QUEUE_SIZE);
 
 	// Signal handler for terminated processes

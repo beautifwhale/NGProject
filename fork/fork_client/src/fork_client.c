@@ -19,7 +19,7 @@
 
 int main(int argc, char * argv[]) {
 	int iSocketFileDescriptor;
-	char * strServerIPAddress;
+	char *strServerIPAddress;
 	//struct Address sAddress;
 
 	if (argc != 2)
@@ -45,7 +45,8 @@ int main(int argc, char * argv[]) {
 	MultiplexIO(stdin, iSocketFileDescriptor);
 
 	// On return exit application
-	close(iSocketFileDescriptor);
-	printf("Game over");
+	//shutdown(iSocketFileDescriptor, SHUT_RDWR);
+	//close(iSocketFileDescriptor);
+	printf("Game over\n");
 	return 0;
 }

@@ -254,8 +254,8 @@ void MultiplexIO(FILE* fp, int socketFileDescriptor)
 				}
 				else
 				{
-					// server has terminated the connection
-					perror("Server terminated");
+					// Server has terminated the connection
+					perror("MultiplexIO() Server terminated");
 					exit(0);
 				}
 			}
