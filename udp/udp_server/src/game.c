@@ -192,7 +192,7 @@ int ProcessRequest(int in, int out, struct Address client, struct GameSession* g
 	{
 		sprintf(outbuf, "%s", "Connection failed no empty game slots on the server.");
 		printf("Connection refused\n");
-		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
+		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 		return -1;
 	}
 
@@ -209,7 +209,7 @@ int ProcessRequest(int in, int out, struct Address client, struct GameSession* g
 		gethostname(hostname, MAXLEN);
 		printf("sending confirmation message to the client..\n");
 		sprintf(outbuf, "Playing hangman on host %s with %s:", hostname, gameSession->strUsername);
-		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
+		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 
 		/* Pick a word at random from the list */
 		printf("picking a random word...\n");
@@ -229,7 +229,8 @@ int ProcessRequest(int in, int out, struct Address client, struct GameSession* g
 		printf("sending game status to client..\n");
 		sprintf(outbuf, "%s %d", gameSession->strPartWord, gameSession->iLives);
 		printf("Game status: %s\n", outbuf);
-		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
+		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+
 
 		// Store information in game session
 		gameSession->cGameState = 'I';
@@ -274,7 +275,7 @@ int ProcessRequest(int in, int out, struct Address client, struct GameSession* g
 			gethostname(hostname, MAXLEN);
 			printf("sending confirmation message to the client..\n");
 			sprintf(outbuf, "Playing hangman on host %s with %s:", hostname, gameSession->strUsername);
-			sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
+			sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 		}
 
 
@@ -284,7 +285,7 @@ int ProcessRequest(int in, int out, struct Address client, struct GameSession* g
 			gameSession->cGameState = 'W';
 			sprintf(outbuf, "Congratulations you won!\nSecret word: %s\nLives left: %d", gameSession->strPartWord, gameSession->iLives);
 			printf("Client %s Won!\n", gameSession->strUsername);
-			sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
+			sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 
 			return -1;
 		}
@@ -292,7 +293,7 @@ int ProcessRequest(int in, int out, struct Address client, struct GameSession* g
 			gameSession->cGameState = 'L';
 			sprintf(outbuf, "Sorry you lost\nSecret word: %s", gameSession->strRandomWord);
 			printf("Client %s Lost!\nSending final message: %s\n", gameSession->strUsername, outbuf);
-			sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
+			sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 
 			return -1;
 		}
@@ -300,7 +301,8 @@ int ProcessRequest(int in, int out, struct Address client, struct GameSession* g
 		printf("sending game state to the client...\n");
 		sprintf(outbuf, "%s %d", gameSession->strPartWord, gameSession->iLives);
 		printf("%s\n", outbuf);
-		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
+		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+
 		return 0;
 	}
 
