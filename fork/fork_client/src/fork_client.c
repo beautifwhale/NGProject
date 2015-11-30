@@ -19,27 +19,34 @@
 
 int main(int argc, char * argv[]) {
 	int iSocketFileDescriptor;
-	char * strServerIPAddress;
-	struct Address sAddress;
+	char *strServerIPAddress;
+	//struct Address sAddress;
 
 	if (argc != 2)
    	{
       		printf("usage:  udpclient <IP address>\n");
      		exit(1);
    	}
+	// Get hostname of server from stdin
 	strServerIPAddress = argv[1];
 
-	iSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
+	// Old version using gethostbyname()
+	//iSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
+	//Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
+	//Connect(iSocketFileDescriptor, (struct sockaddr*) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
-	Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
-
-	Connect(iSocketFileDescriptor, (struct sockaddr*) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
+	// Create connection to the server using getaddrinfo()
+	// Pass in the hostname, service port number, application type, and protocol
+	iSocketFileDescriptor = Connection(strServerIPAddress, "1071", TYPE_CLIENT, SOCK_STREAM);
 
 	// Wrapper function to multiplex user input and network input on the 
-	// socket file descriptor. MultiplexStdinFileDescriptor() implementation
+	// socket file descriptor. MultiplexIO() implementation
 	// can be found in the libsocket socket.c file.
-	MultiplexStdinFileDescriptor(stdin, iSocketFileDescriptor);
+	MultiplexIO(stdin, iSocketFileDescriptor);
 
-	printf("Game over");
+	// On return exit application
+	//shutdown(iSocketFileDescriptor, SHUT_RDWR);
+	//close(iSocketFileDescriptor);
+	printf("Game over\n");
 	return 0;
 }

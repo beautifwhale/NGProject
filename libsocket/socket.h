@@ -58,6 +58,6 @@ void SignalHandler(int signalNumber);
 void Signal(int signalNumber, void* signalHandler);
 void Bind(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize);
 void Listen(int socketFileDescriptor, int maxListenQSize);
-void MultiplexStdinFileDescriptor(FILE* fp, int socketFileDescriptor);
+void MultiplexIO(FILE* fp, int socketFileDescriptor);
 
 #endif /* INCLUDES_SOCKETS_H_ */

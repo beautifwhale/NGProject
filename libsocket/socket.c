@@ -213,7 +213,7 @@ void Listen(int socketFileDescriptor, int maxListenQSize)
 	}
 }
 
-void MultiplexStdinFileDescriptor(FILE* fp, int socketFileDescriptor)
+void MultiplexIO(FILE* fp, int socketFileDescriptor)
 {
 	int maxFileDescriptorsPlus1;
 	int stdinEOF = 0;
@@ -254,8 +254,8 @@ void MultiplexStdinFileDescriptor(FILE* fp, int socketFileDescriptor)
 				}
 				else
 				{
-					// server has terminated the connection
-					perror("Server terminated");
+					// Server has terminated the connection
+					perror("MultiplexIO() Server terminated");
 					exit(0);
 				}
 			}
