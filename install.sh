@@ -18,4 +18,3 @@ cd ../../select_server/src
 make
 
 
-#$SHELL
