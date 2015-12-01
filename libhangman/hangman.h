@@ -46,7 +46,6 @@ struct GameSession{
 struct GameSession gameSessions[MAX_GAME_SESSIONS];
 
 void InitGameSessions();
-void initGameSessions(struct GameSession *gameSessions /* array of game sessions*/);
 void PrintActiveGameSessions();
 void PrintGameSession(struct GameSession *gameSession);
 struct GameSession *FindGameSession(char* username);
@@ -60,14 +59,15 @@ int InitConnection(char *hostname, char *service, int type /* Client or Server *
 // Receive messages from the server using libsocket TODO: create wrapper in libsocket for revfrom()
 int SendMessage(int socketFileDescriptor, char* buffer, size_t size, int flags);
 
-// Receive data from the connected server
+// Receive data from the connected server using recvfrom()
 int ReceiveMessage(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags, struct sockaddr *sender, socklen_t *sendsize);
 
-// PlayHangman is a wrapper for the libsocket function MultiplexIO()
+// PlayHangmanClientTCP is a wrapper for the libsocket function MultiplexIO()
 // Parameters are stdin and the network socket file descriptor
 void PlayHangmanClientTCP(FILE *filePointer, int socketFileDescriptor);
 
-// Server
+// PlayHangmanServerTCP is used on the hangman server to
+// process TCP connections with clients
 void PlayHangmanServerTCP(int in, int out);
 
 #endif /* INCLUDES_GAME_H_ */
