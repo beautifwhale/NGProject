@@ -309,5 +309,10 @@ int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameS
 	return -1;
 }
 
+// Network function wrapper for libsocket
+int ConnectionToServer(char *address, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */)
+{
+	return Connection(address, service, type, protocol);
+}
 
 

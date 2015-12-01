@@ -15,8 +15,9 @@
 // control returns to main and the server listens for a new message.
 //
 #include "../../../libsocket/socket.h"
-#include "../includes/definitions.h"
-#include "../includes/game.h"
+//#include "../includes/definitions.h"
+//#include "../includes/game.h"
+#include "../../../libhangman/game.h"
 #include <string.h>
 
 int main(int argc, char* argv[]) {
@@ -39,7 +40,7 @@ int main(int argc, char* argv[]) {
 	// Create a connection; Using NULL address to listen for all incoming
 	// connections to server. Server port number 1071 and type TYPE_SERVER
 	// Server will listen on port 1071 for any incoming connections
-	iListenSocketFileDescriptor = Connection(NULL, "1071", TYPE_SERVER, SOCK_DGRAM);
+	iListenSocketFileDescriptor = ConnectionToServer(NULL, "1071", TYPE_SERVER, SOCK_DGRAM);
 
 	while(1)
 	{

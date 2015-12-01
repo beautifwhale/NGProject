@@ -1,6 +1,7 @@
 #ifndef INCLUDES_GAME_H_
 #define INCLUDES_GAME_H_
 
+#include "definitions.h"
 #include "../libsocket/socket.h"
 
 struct GameSession{
@@ -47,6 +48,7 @@ struct GameSession *FindGameSession(char* username);
 void play_hangman(int in, int out, struct Address client, struct GameSession* gameSession);
 int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameSession* gameSession, char* message);
 void EndGameSession(struct GameSession *gameSession);
+int ConnectionToServer(char *address, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */);
 
 
 #endif /* INCLUDES_GAME_H_ */
