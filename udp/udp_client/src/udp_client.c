@@ -42,7 +42,7 @@ int main(int argc, char * argv[])
 
 	// Create a connection to the server using the servers IPv4 or IPv6 address, and port number.
 	// The connection type is TYPE_CLIENT to specify client application
-	iSocketFileDescriptor = Connection(strServerIPAddress, "1071", TYPE_CLIENT, SOCK_DGRAM);
+	iSocketFileDescriptor = ConnectionToServer(strServerIPAddress, "1071", TYPE_CLIENT, SOCK_DGRAM);
 
 	// Send Username to server and add '_' delimiter
 	sprintf(buffer, "%s_ ", strUsername);
