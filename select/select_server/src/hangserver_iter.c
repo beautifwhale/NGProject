@@ -10,6 +10,7 @@
 #include "../includes/Game.h"
 #include "../includes/Definitions.h"
 #include "../../../libsocket/socket.h"
+#include <string.h>  strlen()
 
 extern time_t time();
 
@@ -105,7 +106,7 @@ int main(int argc, char* argv[]) {
 			printf("Received username: %s\n", (char *) username);
 
 			//inform user of socket number - used in send and receive commands
-			printf("New connection on socket: %d \n", new_socket,);
+			printf("New connection on socket: %d \n", new_socket);
 
 			/*Write Welcome Message*/
 			write(new_socket, message, strlen(message));
