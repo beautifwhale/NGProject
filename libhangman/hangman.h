@@ -1,4 +1,10 @@
-
+//
+// hangman.h
+//
+// Author David Morton
+//
+// Description: This is the libhangman API used to create networked hangman games.
+//
 #ifndef INCLUDES_GAME_H_
 #define INCLUDES_GAME_H_
 
@@ -11,40 +17,8 @@
 // Networking dependency using libsocket
 #include "../libsocket/socket.h"
 
-struct GameSession{
-
-	// Status of the game session. If this game session has ended
-	// it is removed from server memory
-	char cGameState;
-
-	// Unique identifier for game session associated with a
-	// client
-	char strUsername[255];
-
-	// Sequence number used to keep track of progress
-	// of game session with client
-	int iSequenceNumber;
-
-	// Random word chosen by the server for this game session
-	char* strRandomWord;
-
-	// Length of the random word used to check guess with each char
-	// in the random word char[]
-	int iRandomWordLength;
-
-	// The clients word status so far. As the client guesses correctly the
-	// part word is filled updated.
-	char strPartWord[MAXLEN];
-
-	// Number of lives left
-	int iLives;
-
-	// Id given to game session. This is also the index in the game sessions array.
-	int iSessionId;
-};
-
-// Array of GameSession structs to store user information
-struct GameSession gameSessions[MAX_GAME_SESSIONS];
+// Forward declaration of GameSession struct
+struct GameSession;
 
 // Initialize all game sessions on the server
 // Each game session is initialized to null
@@ -58,7 +32,7 @@ void PrintGameSession(struct GameSession *gameSession);
 
 // Find a game session based on the clients username
 // Return a pointer to the sturct
-struct GameSession *FindGameSession(char* username);
+struct GameSession *FindGameSession(char *username, char *secret);
 
 // Empties data in game session so it can be reused
 // for new games.
@@ -87,5 +61,20 @@ void PlayHangmanClientTCP(FILE *filePointer, int socketFileDescriptor);
 // PlayHangmanServerTCP is used on the hangman server to
 // process TCP connections with clients
 void PlayHangmanServerTCP(int in, int out);
+
+// Set the server to listen mode for incoming TCP client connections
+// This wrapper function calls Listen() in libsocket
+void ListenForConnections(int socketFileDescriptor, int maxListenQSize);
+
+// Set up signal handler when forking processes on the server
+// Fork() will signal the parent process when it has been terminated.
+// Signal() in libsocket will create a signal handler for
+// catching terminated processes and releasing resources
+// used by them. This will prevent zombie processes.
+void CreateSignalHandler();
+
+
+int AcceptGameConnection(int iListenSocketFileDescriptor, struct Address *address);
+
 
 #endif /* INCLUDES_GAME_H_ */

@@ -4,17 +4,20 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/udp_server.c 
+../hangman.c 
+
+O_SRCS += \
+../hangman.o 
 
 OBJS += \
-./src/udp_server.o 
+./hangman.o 
 
 C_DEPS += \
-./src/udp_server.d 
+./hangman.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
-src/%.o: ../src/%.c
+%.o: ../%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
 	gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"

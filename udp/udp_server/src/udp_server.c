@@ -41,6 +41,9 @@ int main(int argc, char* argv[]) {
 
 	while(1)
 	{
+		// Print game session information stored in memory
+		PrintActiveGameSessions();
+
 		printf("Waiting for message from the client...\n");
 		/*
 		if(recvfrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress.sender, &sClientAddress.sendsize) == 0)
@@ -49,7 +52,9 @@ int main(int argc, char* argv[]) {
 			continue;
 		}
 		*/
-
+		// Block and wait for a message from a client
+		// Multiple clients may be sending messages, process
+		// each one and return here to process another
 		if(ReceiveMessage(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress.sender, &sClientAddress.sendsize) == 0)
 		{
 			printf("Client has closed connection\n");
@@ -62,20 +67,22 @@ int main(int argc, char* argv[]) {
 		printf("Received: %s\n", (char*)buffer);
 		printf("Processing packet...\n");
 		char *username = strtok((char*)buffer, "_"); // Tokenize the string using '_' as delimiter
-		char *message = strtok((char*)NULL, "_"); // Get the remaining message
+		char *secret = strtok((char*)NULL, "_"); // Get the secret
+		char *message = strtok((char*)NULL, "_"); // Get the message
 
-		printf("Connected to client %s with message %s\n", username, message);
 
-		// Print game session information stored in memory
-		PrintActiveGameSessions();
+		printf("Connected to client %s with message %s and secret %s\n", username, message, secret);
 
 		// Search for game session. Create one if none exists
-		gameSession = FindGameSession(username);
+		gameSession = FindGameSession(username, secret);
 		if(gameSession == NULL)
 		{
-			// Server is full
-			printf("No more game slots available\n");
+			// Server may be full or secret was incorrect
+			printf("Game session retrieval\n");
 		}
+
+		// Authenticate client using secret
+
 
 		// ProcessRequest from client and return to check next message
 		if(PlayHangmanServerUDP(iListenSocketFileDescriptor, sClientAddress, gameSession, message) == -1)

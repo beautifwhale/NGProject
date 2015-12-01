@@ -1,5 +1,5 @@
 GCC=gcc
-LIBS=-lhangman -lsocket
+LIBS=-lhangman
 LIB_PATH=-L"/usr/lib"
 SOURCE_FILES=fork_server.c
 
