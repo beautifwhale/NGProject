@@ -296,21 +296,19 @@ int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameS
 }
 
 // Network function wrappers for libsocket
-int ConnectionToServer(char *hostname, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */)
+int InitConnection(char *hostname, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */)
 {
-	// Connectio to the server using libsocket Connection()
+	// Connection to the server using libsocket Connection()
 	return Connection(hostname, service, type, protocol);
 }
 
-// Send data to the server using libsocket TODO: create wrapper in libsocket for send()
-int Send(int socketFileDescriptor, char* buffer, size_t size, int flags)
+int SendMessage(int socketFileDescriptor, char* buffer, size_t size, int flags)
 {
 	return send(socketFileDescriptor, buffer, size, flags);
 }
 
-int ReceiveFrom(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize)
+int ReceiveMessage(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize)
 {
-	// Receive messages from the server using libsocket TODO: create wrapper in libsocket for revfrom()
 	return recvfrom(iListenSocketFileDescriptor, buffer, bufferSize, flags, sender, sendsize);
 }
 

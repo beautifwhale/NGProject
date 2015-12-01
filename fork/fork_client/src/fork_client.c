@@ -19,29 +19,35 @@
 int main(int argc, char * argv[]) {
 	int iSocketFileDescriptor;
 	char *strServerIPAddress;
-	//struct Address sAddress;
+	char *strServiceName;
 
-	if (argc != 2)
+	// Check for command line arguments
+	if (argc != 3)
    	{
-      		printf("usage:  udpclient <IP address>\n");
-     		exit(1);
+		printf("usage:  udpclient <hostname> <service name/port Number\n");
+		exit(1);
    	}
-	// Get hostname of server from stdin
+
+	// Get hostname and service name of game on the server from stdin
 	strServerIPAddress = argv[1];
+	strServiceName = argv[2];
 
 	// Old version using gethostbyname()
 	//iSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
 	//Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 	//Connect(iSocketFileDescriptor, (struct sockaddr*) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
+
 	// Create connection to the server using getaddrinfo()
 	// Pass in the hostname, service port number, application type, and protocol
-	iSocketFileDescriptor = ConnectionToServer(strServerIPAddress, "1071", TYPE_CLIENT, SOCK_STREAM);
+	iSocketFileDescriptor = InitConnection(strServerIPAddress, strServiceName, TYPE_CLIENT, SOCK_STREAM);
+
 
 	// Wrapper function to multiplex user input and network input on the 
 	// socket file descriptor. MultiplexIO() implementation
 	// can be found in the libsocket socket.c file.
 	PlayHangmanClientTCP(stdin, iSocketFileDescriptor);
+
 
 	// On return exit application
 	//shutdown(iSocketFileDescriptor, SHUT_RDWR);

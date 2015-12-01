@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 	// Create a connection; Using NULL address to listen for all incoming
 	// connections to server. Server port number 1071 and type TYPE_SERVER
 	// Server will listen on port 1071 for any incoming connections
-	iListenSocketFileDescriptor = ConnectionToServer(NULL, "1071", TYPE_SERVER, SOCK_DGRAM);
+	iListenSocketFileDescriptor = InitConnection(NULL, "1071", TYPE_SERVER, SOCK_DGRAM);
 
 	while(1)
 	{
@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
 		}
 		*/
 
-		if(ReceiveFrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress.sender, &sClientAddress.sendsize) == 0)
+		if(ReceiveMessage(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress.sender, &sClientAddress.sendsize) == 0)
 		{
 			printf("Client has closed connection\n");
 			continue;

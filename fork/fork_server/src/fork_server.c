@@ -21,6 +21,7 @@
 #include "../../../libhangman/hangman.h"
 
 int main(int argc, char* argv[]) {
+
 	int iListenSocketFileDescriptor;
 	char *strServerIPAddress;
 	struct Address sAddress;
@@ -38,7 +39,7 @@ int main(int argc, char* argv[]) {
 	//Bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
 	// Create a connection for the server
-	iListenSocketFileDescriptor = Connection(NULL, "1071", TYPE_SERVER, SOCK_STREAM);
+	iListenSocketFileDescriptor = InitConnection(NULL, "1071", TYPE_SERVER, SOCK_STREAM);
 
 	// Listen for incoming TCP connections
 	Listen(iListenSocketFileDescriptor, MAX_LISTEN_QUEUE_SIZE);

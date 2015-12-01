@@ -55,13 +55,13 @@ void EndGameSession(struct GameSession *gameSession);
 
 // Libsocket wrapper functions to abstract the library and reduce coupling
 // Wrapper for libsocket Connection() that creates a peer connection based on the
-int ConnectionToServer(char *hostname, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */);
+int InitConnection(char *hostname, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */);
 
-// Send data to the connected server
-int Send(int socketFileDescriptor, char* buffer, size_t size, int flags);
+// Receive messages from the server using libsocket TODO: create wrapper in libsocket for revfrom()
+int SendMessage(int socketFileDescriptor, char* buffer, size_t size, int flags);
 
 // Receive data from the connected server
-int ReceiveFrom(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags, struct sockaddr *sender, socklen_t *sendsize);
+int ReceiveMessage(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags, struct sockaddr *sender, socklen_t *sendsize);
 
 // PlayHangman is a wrapper for the libsocket function MultiplexIO()
 // Parameters are stdin and the network socket file descriptor
