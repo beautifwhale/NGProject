@@ -3,7 +3,7 @@ cd libsocket
 ./buildLinux.sh
 echo "libhangman installing"
 cd ../libhangman
-./buildhangman.sh
+./buildLinux.sh
 echo "UDP client and server building..."
 cd ../udp/udp_client/src
 make
