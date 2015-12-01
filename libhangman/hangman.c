@@ -105,7 +105,7 @@ void PlayHangmanServerTCP(int in, int out)
 
 	gethostname(hostname, MAXLEN);
 	sprintf(outbuf, "Playing hangman on host %s: \n \n", hostname);
-	write(out, outbuf, strlen(outbuf));
+	Write(out, outbuf, strlen(outbuf));
 
 
 	/* Pick a word at random from the list */
@@ -122,7 +122,7 @@ void PlayHangmanServerTCP(int in, int out)
 	part_word[i] = '\0';
 
 	sprintf(outbuf, "%s %d \n", part_word, lives);
-	write(out, outbuf, strlen(outbuf));
+	Write(out, outbuf, strlen(outbuf));
 
 	while (game_state == 'I')
 	/* Get a letter from player guess */
@@ -148,7 +148,7 @@ void PlayHangmanServerTCP(int in, int out)
 			strcpy(part_word, whole_word); /* User Show the word */
 		}
 		sprintf(outbuf, "%s %d \n", part_word, lives);
-		write(out, outbuf, strlen(outbuf));
+		Write(out, outbuf, strlen(outbuf));
 	}
 }
 
@@ -168,7 +168,8 @@ int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct
 	{
 		sprintf(outbuf, "%s", "Connection failed no empty game slots on the server.");
 		printf("Connection refused\n");
-		Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+		//sendto(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+		SendTo(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 		return -1;
 	}
 
@@ -185,7 +186,8 @@ int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct
 		gethostname(hostname, MAXLEN);
 		printf("sending confirmation message to the client..\n");
 		sprintf(outbuf, "Playing hangman on host %s with %s:", hostname, gameSession->strUsername);
-		Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+		SendTo(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+
 
 		/* Pick a word at random from the list */
 		printf("picking a random word...\n");
@@ -205,7 +207,7 @@ int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct
 		printf("sending game status to client..\n");
 		sprintf(outbuf, "%s %d", gameSession->strPartWord, gameSession->iLives);
 		printf("Game status: %s\n", outbuf);
-		Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+		SendTo(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 
 
 		// Store information in game session
@@ -251,7 +253,8 @@ int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct
 			gethostname(hostname, MAXLEN);
 			printf("sending confirmation message to the client..\n");
 			sprintf(outbuf, "Playing hangman on host %s with %s:", hostname, gameSession->strUsername);
-			Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+			SendTo(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+
 		}
 
 
@@ -261,7 +264,8 @@ int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct
 			gameSession->cGameState = 'W';
 			sprintf(outbuf, "Congratulations you won!\nSecret word: %s\nLives left: %d", gameSession->strPartWord, gameSession->iLives);
 			printf("Client %s Won!\n", gameSession->strUsername);
-			Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+			SendTo(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+
 
 			return -1;
 		}
@@ -269,7 +273,7 @@ int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct
 			gameSession->cGameState = 'L';
 			sprintf(outbuf, "Sorry you lost\nSecret word: %s", gameSession->strRandomWord);
 			printf("Client %s Lost!\nSending final message: %s\n", gameSession->strUsername, outbuf);
-			Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+			SendTo(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 
 			return -1;
 		}
@@ -277,7 +281,8 @@ int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct
 		printf("sending game state to the client...\n");
 		sprintf(outbuf, "%s %d", gameSession->strPartWord, gameSession->iLives);
 		printf("%s\n", outbuf);
-		Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+		SendTo(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+
 
 		return 0;
 	}

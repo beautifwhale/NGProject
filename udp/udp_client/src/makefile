@@ -1,5 +1,5 @@
 GCC=gcc
-LIBS=-lsocket -lhangman
+LIBS=-lhangman
 LIB_PATH=-L"/usr/lib"
 SOURCE_FILES=udp_client.c
 

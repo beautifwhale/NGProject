@@ -301,6 +301,17 @@ int Send(int socketFileDescriptor, char *message, size_t size, int flags)
 	return numberOfBytesSent;
 }
 
+int SendTo(int socketFileDescriptor, char *message, size_t size, int flags, struct sockaddr *sender, socklen_t sendsize)
+{
+	int numberOfBytesSent = sendto(socketFileDescriptor, message, size, flags, sender, sendsize);
+	if(numberOfBytesSent < 0)
+	{
+		perror("Error in SendTo()");
+		exit(1); // Exit failure
+	}
+	return numberOfBytesSent;
+}
+
 int ReceiveFrom(int socketFileDescriptor, char *message, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize)
 {
 	int numberOfBytesReceived = recvfrom(socketFileDescriptor, message, bufferSize, flags, sender, sendsize);

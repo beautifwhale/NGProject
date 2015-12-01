@@ -69,6 +69,7 @@ void Bind(int socketFileDescriptor, const struct sockaddr* socketAddress, sockle
 void Listen(int socketFileDescriptor, int maxListenQSize);
 void MultiplexIO(FILE* fp, int socketFileDescriptor);
 int Send(int socketFileDescriptor, char *message, size_t size, int flags);
+int SendTo(int socketFileDescriptor, char *message, size_t size, int flags, struct sockaddr *sender, socklen_t sendsize);
 int ReceiveFrom(int socketFileDescriptor, char *message, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize);
 
 #endif /* INCLUDES_SOCKETS_H_ */
