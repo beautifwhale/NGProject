@@ -18,8 +18,7 @@
 // will exit with code 0 meaning 'Success'
 //
 #include "../../../libsocket/socket.h"
-#include "../includes/definitions.h"
-#include "../includes/game.h"
+#include "../../../libhangman/hangman.h"
 
 int main(int argc, char* argv[]) {
 	int iListenSocketFileDescriptor;
@@ -77,7 +76,7 @@ int main(int argc, char* argv[]) {
 			close(iListenSocketFileDescriptor);
 
 			/* ---------------- Play_hangman () ---------------------*/
-			play_hangman(connfd, connfd);
+			PlayHangmanServerTCP(connfd, connfd);
 
 			/*
 			 *  On return exit to kill the process. The kernel will then

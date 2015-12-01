@@ -14,8 +14,7 @@
 // call to MultiplexStdinFileDescriptor(). Implementations for each function call in the client 
 // can be found in the libsocket socket.c file.
 //
-#include "../../../libsocket/socket.h"
-#include "../includes/definitions.h"
+#include "../../../libhangman/hangman.h"
 
 int main(int argc, char * argv[]) {
 	int iSocketFileDescriptor;
@@ -37,12 +36,12 @@ int main(int argc, char * argv[]) {
 
 	// Create connection to the server using getaddrinfo()
 	// Pass in the hostname, service port number, application type, and protocol
-	iSocketFileDescriptor = Connection(strServerIPAddress, "1071", TYPE_CLIENT, SOCK_STREAM);
+	iSocketFileDescriptor = ConnectionToServer(strServerIPAddress, "1071", TYPE_CLIENT, SOCK_STREAM);
 
 	// Wrapper function to multiplex user input and network input on the 
 	// socket file descriptor. MultiplexIO() implementation
 	// can be found in the libsocket socket.c file.
-	MultiplexIO(stdin, iSocketFileDescriptor);
+	PlayHangmanClientTCP(stdin, iSocketFileDescriptor);
 
 	// On return exit application
 	//shutdown(iSocketFileDescriptor, SHUT_RDWR);

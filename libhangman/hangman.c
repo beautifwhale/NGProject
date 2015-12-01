@@ -101,28 +101,22 @@ void EndGameSession(struct GameSession *gameSession)
 	gameSession->iSequenceNumber = 0;
 }
 
+void PlayHangmanServerTCP(int in, int out)
+{
 
-void play_hangman(int in, int out, struct Address client, struct GameSession* gameSession) {
-
-	printf("Playing game with %s\n", gameSession->strUsername);
 	char * whole_word, part_word[MAXLEN], guess[MAXLEN], outbuf[MAXLEN];
 
 	int lives = MAX_LIVES;
-	//int game_state = 'I'; //I = Incomplete
-	gameSession->cGameState = 'I';
+	int game_state = 'I'; //I = Incomplete
 	int i, good_guess, word_length;
 	char hostname[MAXLEN];
 
-	socklen_t iClientSize;
-	iClientSize = sizeof(client.m_sAddress);
-
 	gethostname(hostname, MAXLEN);
-	printf("sending confirmation message to the client..\n");
-	sprintf(outbuf, "Playing hangman on host %s with %s:", hostname, gameSession->strUsername);
-	sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
+	sprintf(outbuf, "Playing hangman on host %s: \n \n", hostname);
+	write(out, outbuf, strlen(outbuf));
+
 
 	/* Pick a word at random from the list */
-	printf("picking a random word...\n");
 	srand((int) time((long *) 0)); /* randomize the seed */
 
 	whole_word = word[rand() % NUM_OF_WORDS];
@@ -135,15 +129,17 @@ void play_hangman(int in, int out, struct Address client, struct GameSession* ga
 
 	part_word[i] = '\0';
 
-	printf("sending game status to client..\n");
-	sprintf(outbuf, "%s %d", part_word, lives);
-	sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
+	sprintf(outbuf, "%s %d \n", part_word, lives);
+	write(out, outbuf, strlen(outbuf));
 
-	while (gameSession->cGameState == 'I')
+	while (game_state == 'I')
 	/* Get a letter from player guess */
 	{
-		printf("waiting for guess from the client...\n");
-		recvfrom(in, guess, MAXLEN, 0, (struct sockaddr*) &client.m_sAddress, &iClientSize);
+		while (read(in, guess, MAXLEN) < 0) {
+			if (errno != EINTR)
+				exit(4);
+			printf("re-read the startin \n");
+		} /* Re-start read () if interrupted by signal */
 		good_guess = 0;
 		for (i = 0; i < word_length; i++) {
 			if (guess[0] == whole_word[i]) {
@@ -154,19 +150,18 @@ void play_hangman(int in, int out, struct Address client, struct GameSession* ga
 		if (!good_guess)
 			lives--;
 		if (strcmp(whole_word, part_word) == 0)
-			gameSession->cGameState = 'W';
+			game_state = 'W'; /* W ==> User Won */
 		else if (lives == 0) {
-			//game_state = 'L';
-			gameSession->cGameState = 'L';
-			strcpy(part_word, whole_word);
+			game_state = 'L'; /* L ==> User Lost */
+			strcpy(part_word, whole_word); /* User Show the word */
 		}
-
-		printf("sending game state to the client...\n");
-		sprintf(outbuf, "%s %d", part_word, lives);
-		sendto(out, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.m_sAddress, sizeof(client.m_sAddress));
+		sprintf(outbuf, "%s %d \n", part_word, lives);
+		write(out, outbuf, strlen(outbuf));
 	}
 }
 
+
+// Server UDP function for processing datagrams
 int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameSession* gameSession, char* message) {
 
 	char *whole_word;
@@ -300,14 +295,23 @@ int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameS
 	return -1;
 }
 
-// Network function wrapper for libsocket
-int ConnectionToServer(char *address, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */)
+// Network function wrappers for libsocket
+int ConnectionToServer(char *hostname, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */)
 {
-	return Connection(address, service, type, protocol);
+	// Connectio to the server using libsocket Connection()
+	return Connection(hostname, service, type, protocol);
 }
 
 int ReceiveFromServer(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize)
 {
+	// Receive messages from the server using libsocket
 	return recvfrom(iListenSocketFileDescriptor, buffer, bufferSize, flags, sender, sendsize);
+}
+
+void PlayHangmanClientTCP(FILE *filePointer, int socketFileDescriptor)
+{
+	// Use libsockets MultiplexIO to communicate over the network
+	// with the server.
+	MultiplexIO(filePointer, socketFileDescriptor);
 }
 

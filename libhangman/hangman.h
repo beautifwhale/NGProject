@@ -50,10 +50,20 @@ void initGameSessions(struct GameSession *gameSessions /* array of game sessions
 void PrintActiveGameSessions();
 void PrintGameSession(struct GameSession *gameSession);
 struct GameSession *FindGameSession(char* username);
-void play_hangman(int in, int out, struct Address client, struct GameSession* gameSession);
 int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameSession* gameSession, char* message);
 void EndGameSession(struct GameSession *gameSession);
-int ConnectionToServer(char *address, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */);
+
+// Libsocket wrapper functions to abstract the library and reduce coupling
+// Wrapper for libsocket Connection() that creates a peer connection based on the
+int ConnectionToServer(char *hostname, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */);
+
 int ReceiveFromServer(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags, struct sockaddr *sender, socklen_t *sendsize);
+
+// PlayHangman is a wrapper for the libsocket function MultiplexIO()
+// Parameters are stdin and the network socket file descriptor
+void PlayHangmanClientTCP(FILE *filePointer, int socketFileDescriptor);
+
+// Server
+void PlayHangmanServerTCP(int in, int out);
 
 #endif /* INCLUDES_GAME_H_ */
