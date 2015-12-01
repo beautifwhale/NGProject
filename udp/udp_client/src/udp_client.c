@@ -9,7 +9,6 @@
 //
 // Description: The UDP client
 //
-#include "../../../libsocket/socket.h"
 #include "../../../libhangman/hangman.h"
 #include <string.h>
 
@@ -46,7 +45,8 @@ int main(int argc, char * argv[])
 
 	// Send Username to server and add '_' delimiter
 	sprintf(buffer, "%s_ ", strUsername);
-	send(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
+	//send(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
+	SendToServer(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
 	printf("Username %s sent to the server\n", strUsername);
 
 	// Receive message from server, this may signify a failure or
@@ -83,7 +83,7 @@ int main(int argc, char * argv[])
 		fgets(userInput, sizeof(userInput), stdin);
 		sprintf(buffer, "%s_%s", strUsername, userInput);
 		printf("Sending: %s", buffer);
-		send(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
+		SendToServer(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
 
 		// Receive reply from server
 		printf("Waiting for reply from the server...\n");

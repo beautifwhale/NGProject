@@ -57,6 +57,8 @@ void EndGameSession(struct GameSession *gameSession);
 // Wrapper for libsocket Connection() that creates a peer connection based on the
 int ConnectionToServer(char *hostname, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */);
 
+int SendToServer(int socketFileDescriptor, char* buffer, size_t size, int flags);
+
 int ReceiveFromServer(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags, struct sockaddr *sender, socklen_t *sendsize);
 
 // PlayHangman is a wrapper for the libsocket function MultiplexIO()
