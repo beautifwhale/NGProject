@@ -10,7 +10,7 @@
 #include "../includes/Game.h"
 #include "../includes/Definitions.h"
 #include "../../../libsocket/socket.h"
-#include <string.h>  strlen()
+#include <string.h>  //strlen()
 
 extern time_t time();
 
