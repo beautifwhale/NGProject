@@ -303,12 +303,12 @@ int ConnectionToServer(char *hostname, char *service, int type /* Client or Serv
 }
 
 // Send data to the server using libsocket TODO: create wrapper in libsocket for send()
-int SendToServer(int socketFileDescriptor, char* buffer, size_t size, int flags)
+int Send(int socketFileDescriptor, char* buffer, size_t size, int flags)
 {
 	return send(socketFileDescriptor, buffer, size, flags);
 }
 
-int ReceiveFromServer(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize)
+int ReceiveFrom(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize)
 {
 	// Receive messages from the server using libsocket TODO: create wrapper in libsocket for revfrom()
 	return recvfrom(iListenSocketFileDescriptor, buffer, bufferSize, flags, sender, sendsize);

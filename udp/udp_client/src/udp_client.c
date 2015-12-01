@@ -46,14 +46,14 @@ int main(int argc, char * argv[])
 	// Send Username to server and add '_' delimiter
 	sprintf(buffer, "%s_ ", strUsername);
 	//send(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
-	SendToServer(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
+	Send(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
 	printf("Username %s sent to the server\n", strUsername);
 
 	// Receive message from server, this may signify a failure or
 	// a successful connection.
 	printf("Waiting for confirmation message from the server...\n");
 	//recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
-	ReceiveFromServer(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
+	ReceiveFrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
 	printf("%s\n", buffer);
 
 	// If the server is full the connection is refused.
@@ -70,7 +70,7 @@ int main(int argc, char * argv[])
 
 		printf("Waiting for game session status...\n");
 		//recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
-		ReceiveFromServer(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
+		ReceiveFrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
 		printf("%s\n", buffer);
 	}
 
@@ -83,12 +83,12 @@ int main(int argc, char * argv[])
 		fgets(userInput, sizeof(userInput), stdin);
 		sprintf(buffer, "%s_%s", strUsername, userInput);
 		printf("Sending: %s", buffer);
-		SendToServer(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
+		Send(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
 
 		// Receive reply from server
 		printf("Waiting for reply from the server...\n");
 		//recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
-		ReceiveFromServer(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
+		ReceiveFrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
 		printf("%s\n", buffer);
 
 		// If the servers reply contains 'won' or 'lost' break and close the socket.

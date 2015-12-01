@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
 		}
 		*/
 
-		if(ReceiveFromServer(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress.sender, &sClientAddress.sendsize) == 0)
+		if(ReceiveFrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress.sender, &sClientAddress.sendsize) == 0)
 		{
 			printf("Client has closed connection\n");
 			continue;
