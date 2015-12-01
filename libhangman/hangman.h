@@ -73,7 +73,8 @@ void ListenForConnections(int socketFileDescriptor, int maxListenQSize);
 // used by them. This will prevent zombie processes.
 void CreateSignalHandler();
 
-int AcceptGameConnections(int iListenSocketFileDescriptor, struct Address *address);
+
+int AcceptGameConnection(int iListenSocketFileDescriptor, struct Address *address);
 
 
 #endif /* INCLUDES_GAME_H_ */

@@ -369,7 +369,7 @@ void CreateSignalHandler()
 	Signal(SIGCHLD, SignalHandler);
 }
 
-int AcceptGameConnections(int iListenSocketFileDescriptor, struct Address *address)
+int AcceptGameConnection(int iListenSocketFileDescriptor, struct Address *address)
 {
 	int connfd;
 	socklen_t client_len = sizeof(address->m_sAddress);

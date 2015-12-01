@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 
 		// Accept all incoming TCP connections and return a file descriptor
 		// used to communicate with the client.
-		connfd = AcceptGameConnections(iListenSocketFileDescriptor, &sAddress);
+		connfd = AcceptGameConnection(iListenSocketFileDescriptor, &sAddress);
 
 		// There was no error in Accept()! Woo! Create a child process
 		if( (childProcessID = fork()) == 0)
