@@ -53,7 +53,8 @@ int main(int argc, char* argv[]) {
 		// used to communicate with the client.
 		connfd = AcceptGameConnection(iListenSocketFileDescriptor, &sAddress);
 
-		// There was no error in Accept()! Woo! Create a child process
+		// There was no error in AcceptGameConnection()! Woo! Create a child process
+		// to handle game for each client
 		if( (childProcessID = fork()) == 0)
 		{
 			// CHILD

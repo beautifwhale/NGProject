@@ -32,7 +32,7 @@ void PrintGameSession(struct GameSession *gameSession);
 
 // Find a game session based on the clients username
 // Return a pointer to the sturct
-struct GameSession *FindGameSession(char* username);
+struct GameSession *FindGameSession(char *username, char *secret);
 
 // Empties data in game session so it can be reused
 // for new games.

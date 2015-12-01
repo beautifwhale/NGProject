@@ -31,6 +31,9 @@ struct GameSession{
 	// client
 	char strUsername[255];
 
+	// Unique secret created by the user for this game session
+	char strSecret[255];
+
 	// Sequence number used to keep track of progress
 	// of game session with client
 	int iSequenceNumber;
@@ -62,6 +65,7 @@ void InitGameSessions()
 	for(i = 0; i < MAX_GAME_SESSIONS; i++)
 	{
 		strcpy(gameSessions[i].strUsername, "null");
+		strcpy(gameSessions[i].strSecret, "null");
 		gameSessions[i].cGameState = 'U'; // unknown
 		gameSessions[i].iLives = 0;
 		gameSessions[i].iRandomWordLength = 0;
@@ -87,20 +91,30 @@ void PrintActiveGameSessions()
 void PrintGameSession(struct GameSession *gameSession)
 {
 	printf("Username: %s\n", gameSession->strUsername);
+	printf("Secret: %s\n", gameSession->strSecret);
 	printf("Lives: %d\n", gameSession->iLives);
-	printf("Secret word: %s\n", gameSession->strRandomWord);
+	printf("Word: %s\n", gameSession->strRandomWord);
 	printf("Progress: %s\n", gameSession->strPartWord);
 }
 
-struct GameSession *FindGameSession(char* username)
+struct GameSession *FindGameSession(char* username, char* secret)
 {
-	printf("Searching for game session with %s...\n", username);
+	printf("Searching for game session with %s and secret %s...\n", username, secret);
 	int i;
 	for(i = 0; i < MAX_GAME_SESSIONS; i++)
 	{
 		if(strcmp(gameSessions[i].strUsername, username) == 0)
 		{
 			printf("Game session found!\n");
+
+			// Check client secret
+			if(strcmp(gameSessions[i].strSecret, secret) != 0)
+			{
+				printf("Secrets do not match for username %s\n", username);
+				printf("GameSession Secret: %s\nClient Secret: %s\n", gameSessions[i].strSecret, secret);
+				return NULL;
+			}
+
 			//return gameSessions[i].iSessionId; // return game session id
 			return &gameSessions[i];
 		}
@@ -113,6 +127,8 @@ struct GameSession *FindGameSession(char* username)
 		{
 			printf("No game session. Empty slot found! Creating new game...\n");
 			strcpy(gameSessions[i].strUsername, username);
+			strcpy(gameSessions[i].strSecret, secret);
+
 			gameSessions[i].iSessionId = i;
 			//return gameSessions[i].iSessionId; // return game session id
 			return &gameSessions[i];
@@ -126,6 +142,7 @@ struct GameSession *FindGameSession(char* username)
 void EndGameSession(struct GameSession *gameSession)
 {
 	strcpy(gameSession->strUsername, "null");
+	strcpy(gameSession->strSecret, "null");
 	gameSession->cGameState = 'U';
 	gameSession->iSequenceNumber = 0;
 }
@@ -211,7 +228,7 @@ int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct
 	// No more game slots available on the server
 	if(gameSession == NULL)
 	{
-		sprintf(outbuf, "%s", "Connection failed no empty game slots on the server.");
+		sprintf(outbuf, "%s", "Connection failed. Server full or secret was incorrect");
 		printf("Connection refused\n");
 		//sendto(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 		SendTo(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
@@ -277,7 +294,7 @@ int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct
 		printf("Processing guess for client. Printing game session...\n");
 		PrintGameSession(gameSession);
 
-		// If the client guesses right update the part word in the
+		// If the client guesses right, update the part word in the
 		// game session. If the client is resuming their game skip the guess
 		if(message[0] != ' ')
 		{
@@ -295,6 +312,8 @@ int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct
 		}
 		else
 		{
+			// If the first message from the client is blank then
+			// send a confirmation message to confirm game start
 			gethostname(hostname, MAXLEN);
 			printf("sending confirmation message to the client..\n");
 			sprintf(outbuf, "Playing hangman on host %s with %s:", hostname, gameSession->strUsername);
@@ -302,6 +321,8 @@ int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct
 
 		}
 
+		// Increment the sequence number for the game session
+		gameSession->iSequenceNumber++;
 
 		// Check if the word has been guessed correctly
 		if (strcmp(gameSession->strRandomWord, gameSession->strPartWord) == 0)
@@ -323,15 +344,16 @@ int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct
 			return -1;
 		}
 
-		printf("sending game state to the client...\n");
+		printf("Sending game state to the client...\n");
 		sprintf(outbuf, "%s %d", gameSession->strPartWord, gameSession->iLives);
 		printf("%s\n", outbuf);
 		SendTo(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 
-
+		// Return to process another message
 		return 0;
 	}
 
+	// Game state is not 'I' or the sequence number is not 0
 	return -1;
 }
 
@@ -369,6 +391,8 @@ void CreateSignalHandler()
 	Signal(SIGCHLD, SignalHandler);
 }
 
+// Accept all incoming TCP connections and return a file descriptor
+// used to communicate with the client.
 int AcceptGameConnection(int iListenSocketFileDescriptor, struct Address *address)
 {
 	int connfd;

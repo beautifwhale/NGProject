@@ -19,6 +19,9 @@ int main(int argc, char * argv[])
 	char* strServerIPAddress;
 	char* strSerivceName;
 	char* strUsername;
+	char* strSecret;
+
+	int sequenceNumber = 0;
 
 	char buffer[MAX_BUF_SIZE];
 	char userInput[MAX_BUF_SIZE];
@@ -27,9 +30,9 @@ int main(int argc, char * argv[])
 	sServerAddress.sendsize = sizeof(sServerAddress.sender);
 	bzero(&sServerAddress.sender, sizeof(sServerAddress.sender));
 
- 	if (argc != 4)
+ 	if (argc != 5)
   	{
-		printf("usage: clientUDP <IP address> <service name/port number> <userName>\n");
+		printf("usage: clientUDP <IP address> <service name/port number> <userName> <secret>\n");
 		exit(1);
    	}
 
@@ -37,6 +40,7 @@ int main(int argc, char * argv[])
 	strServerIPAddress = argv[1];
 	strSerivceName = argv[2];
 	strUsername = argv[3];
+	strSecret = argv[4];
 
 	// Connection to server is active initially.
 	int iConnectionSuccess = 1;
@@ -45,11 +49,11 @@ int main(int argc, char * argv[])
 	// The connection type is TYPE_CLIENT to specify client application
 	iSocketFileDescriptor = InitConnection(strServerIPAddress, strSerivceName, TYPE_CLIENT, SOCK_DGRAM);
 
-	// Send Username to server and add '_' delimiter
-	sprintf(buffer, "%s_ ", strUsername);
+	// Send Username and secret to server and add '_' delimiters
+	sprintf(buffer, "%s_%s_ ", strUsername, strSecret);
 
 	SendMessage(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
-	printf("Username %s sent to the server\n", strUsername);
+	printf("Username %s and Secret <%s> sent to the server\n", strUsername, strSecret);
 
 	// Receive message from server, this may signify a failure or
 	// a successful connection.
@@ -62,7 +66,6 @@ int main(int argc, char * argv[])
 	// The client will not enter the read write loop if the connection fails.
 	if(strstr(buffer, "failed") != NULL)
 	{
-		printf("Connection to server failed. Server may be full.\n");
 		iConnectionSuccess = 0; // Connection refused
 	}
 	else
@@ -83,8 +86,9 @@ int main(int argc, char * argv[])
 		// to the server. Input is taken from stdin.
 		printf("Send guess to the server:\n");
 		fgets(userInput, sizeof(userInput), stdin);
-		sprintf(buffer, "%s_%s", strUsername, userInput);
-		printf("Sending: %s", buffer);
+
+		sprintf(buffer, "%s_%s_%c", strUsername, strSecret, userInput[0]);
+		printf("Sending: %s\n", buffer);
 		SendMessage(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
 
 		// Receive reply from server
