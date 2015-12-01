@@ -1,4 +1,10 @@
-
+//
+// hangman.h
+//
+// Author David Morton
+//
+// Description:
+//
 #ifndef INCLUDES_GAME_H_
 #define INCLUDES_GAME_H_
 

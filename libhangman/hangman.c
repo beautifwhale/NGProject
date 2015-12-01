@@ -1,4 +1,10 @@
-
+//
+// hangman.c
+//
+// Author David Morton
+//
+// Description:
+//
 #include <syslog.h> // syslog()
 #include <string.h> // strlen()
 #include <unistd.h> // gethostname(), write()
