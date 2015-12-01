@@ -1,6 +1,7 @@
 // fork_server.c
 // 
 // Year 4 Networked Games Assignment 2015
+//
 // Team:	David Morton
 //			Kevin Byrne
 // 			add names here...
@@ -13,8 +14,7 @@
 // The SignalHandler() function implementation can be found in the socket.c file in the libsocket library.
 // For each new TCP connection from a client the server will create a new process using the fork() function. 
 // The listening socket inside the new process is then closed and control is passed to the play_hangman() function
-// described in the game.c file. Time permitting the game.c implementations will be archived to create
-// a library for the hangman game. Once the game has ended the play_hangman() function returns and the process
+// described in the game.c file. Once the game has ended the PlayHangmanServerTCP() function returns and the process
 // will exit with code 0 meaning 'Success'
 //
 #include "../../../libsocket/socket.h"
@@ -23,15 +23,12 @@
 int main(int argc, char* argv[]) {
 
 	int iListenSocketFileDescriptor;
-	char *strServerIPAddress;
 	struct Address sAddress;
 	pid_t childProcessID;
 	int connfd;
 	socklen_t client_len;
 
-	strServerIPAddress = "0.0.0.0";
-
-	printf("Server: initialising\n");
+	printf("Hangman server spinning up..\n");
 
 	// Old version using gethostbyname()
 	//iListenSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
@@ -47,7 +44,7 @@ int main(int argc, char* argv[]) {
 	// Signal handler for terminated processes
 	Signal(SIGCHLD, SignalHandler);
 
-	printf("listening for connections\n");
+	printf("Listening for incoming game connections\n");
 	for( ; ; ) {
 		client_len = sizeof(sAddress.m_sAddress);
 		// Accept connections from clients
@@ -73,8 +70,10 @@ int main(int argc, char* argv[]) {
 			// CHILD
 			//printf("child %d created\n", childProcessID);
 
-			// close the parents listen file descriptor in the child
+			// Close the parents listen file descriptor in the child
 			close(iListenSocketFileDescriptor);
+
+			printf("Server starting a new game of Hangman\n");
 
 			/* ---------------- Play_hangman () ---------------------*/
 			PlayHangmanServerTCP(connfd, connfd);

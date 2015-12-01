@@ -5,7 +5,7 @@
 #define MAX_LIVES 12
 #define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))
 #define MAXLEN 80 /* Maximum size in the world of Any string */
-#define HANGMAN_TCP_PORT 1071
+#define MAX_GAME_SESSIONS 10 // Number of game slots available on the server
 
 #include "../libsocket/socket.h"
 
@@ -40,8 +40,6 @@ struct GameSession{
 	// Id given to game session. This is also the index in the game sessions array.
 	int iSessionId;
 };
-
-#define MAX_GAME_SESSIONS 10
 
 struct GameSession gameSessions[MAX_GAME_SESSIONS];
 

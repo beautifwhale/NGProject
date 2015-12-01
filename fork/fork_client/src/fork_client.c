@@ -1,6 +1,7 @@
 // fork_client.c
 // 
 // Year 4 Networked Games Assignment 2015
+//
 // Team:	David Morton
 //			Kevin Byrne
 // 			add names here...
@@ -11,7 +12,7 @@
 // server running the Hangman game. The client will initiate a connection with the server using
 // the wrapper functions provided by the libsocket library. Once a connection is set up inputs 
 // from the user and the network socket are multiplexed using the select() function inside the 
-// call to MultiplexStdinFileDescriptor(). Implementations for each function call in the client 
+// call to PlayHangmanClientTCP(). Implementations for each function call in the client
 // can be found in the libsocket socket.c file.
 //
 #include "../../../libhangman/hangman.h"
@@ -24,7 +25,7 @@ int main(int argc, char * argv[]) {
 	// Check for command line arguments
 	if (argc != 3)
    	{
-		printf("usage:  udpclient <hostname> <service name/port Number\n");
+		printf("usage: clientForkTCP <hostname> <service name/port Number>\n");
 		exit(1);
    	}
 

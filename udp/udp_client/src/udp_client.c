@@ -29,7 +29,7 @@ int main(int argc, char * argv[])
 
  	if (argc != 4)
   	{
-		printf("usage:  udpclient <IP address> <service name/port number> <userName>\n");
+		printf("usage: clientUDP <IP address> <service name/port number> <userName>\n");
 		exit(1);
    	}
 

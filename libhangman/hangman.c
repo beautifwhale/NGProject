@@ -25,21 +25,6 @@ void InitGameSessions()
 	}
 }
 
-void initGameSessions(struct GameSession* gameSessions /* array of game sessions*/)
-{
-	int i;
-	for(i = 0; i < MAX_GAME_SESSIONS; i++)
-	{
-		strcpy(gameSessions[i].strUsername, "null");
-		gameSessions[i].cGameState = 'U'; // unknown
-		gameSessions[i].iLives = 0;
-		gameSessions[i].iRandomWordLength = 0;
-		gameSessions[i].iSequenceNumber = 0;
-		gameSessions[i].strRandomWord = "null";
-	}
-}
-
-
 void PrintActiveGameSessions()
 {
 	printf("active game sessions:\n");
