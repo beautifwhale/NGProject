@@ -10,7 +10,7 @@
 // Description: The UDP client
 //
 #include "../../../libsocket/socket.h"
-#include "../includes/definitions.h"
+#include "../../../libhangman/hangman.h"
 #include <string.h>
 
 int main(int argc, char * argv[])
@@ -52,7 +52,8 @@ int main(int argc, char * argv[])
 	// Receive message from server, this may signify a failure or
 	// a successful connection.
 	printf("Waiting for confirmation message from the server...\n");
-	recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
+	//recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
+	ReceiveFromServer(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
 	printf("%s\n", buffer);
 
 	// If the server is full the connection is refused.
@@ -68,7 +69,8 @@ int main(int argc, char * argv[])
 		iConnectionSuccess = 1; // Connection accepted
 
 		printf("Waiting for game session status...\n");
-		recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
+		//recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
+		ReceiveFromServer(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
 		printf("%s\n", buffer);
 	}
 
@@ -85,7 +87,8 @@ int main(int argc, char * argv[])
 
 		// Receive reply from server
 		printf("Waiting for reply from the server...\n");
-		recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
+		//recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
+		ReceiveFromServer(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
 		printf("%s\n", buffer);
 
 		// If the servers reply contains 'won' or 'lost' break and close the socket.

@@ -1,7 +1,13 @@
+
 #ifndef INCLUDES_GAME_H_
 #define INCLUDES_GAME_H_
 
-#include "../../../libsocket/socket.h"
+#define MAX_LIVES 12
+#define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))
+#define MAXLEN 80 /* Maximum size in the world of Any string */
+#define HANGMAN_TCP_PORT 1071
+
+#include "../libsocket/socket.h"
 
 struct GameSession{
 
@@ -47,6 +53,7 @@ struct GameSession *FindGameSession(char* username);
 void play_hangman(int in, int out, struct Address client, struct GameSession* gameSession);
 int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameSession* gameSession, char* message);
 void EndGameSession(struct GameSession *gameSession);
-
+int ConnectionToServer(char *address, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */);
+int ReceiveFromServer(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags, struct sockaddr *sender, socklen_t *sendsize);
 
 #endif /* INCLUDES_GAME_H_ */

@@ -8,8 +8,8 @@
 //
 //
 // Description: The server in the Hangman game will listen for messages for clients
-// on port 1071. The port number can be received on the command line but is hardcoded in this
-// implementation. When a message is received the clients username and message are parsed from the
+// on port 1071. The port number is received from user input on the command line when
+// running the server. When a message is received the clients username and message are parsed from the
 // packet string. The username is used as a search key in the array of game session structs, if one is found
 // it is passed to ProcessRequest(), if not a new game session is created and processed. Once the client message is processed
 // control returns to main and the server listens for a new message.
@@ -17,12 +17,12 @@
 //#include "../../../libsocket/socket.h"
 //#include "../includes/definitions.h"
 //#include "../includes/game.h"
-#include "../../../libhangman/game.h"
 #include <string.h>
+#include "../../../libhangman/hangman.h"
 
 int main(int argc, char* argv[]) {
-	int iListenSocketFileDescriptor;
 
+	int iListenSocketFileDescriptor;
 	// Create Address struct to store client information
 	struct Address sClientAddress;
 	sClientAddress.sendsize = sizeof(sClientAddress.sender);

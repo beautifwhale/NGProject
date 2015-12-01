@@ -8,6 +8,8 @@
 #include <netdb.h>
 #include <stdlib.h> // exit(),
 #include <unistd.h> // read(), write(), fork()
+#include <signal.h>
+#include <errno.h>
 
 // Max buffer size used for the read buffer of file descriptors
 #define MAX_BUF_SIZE 4096

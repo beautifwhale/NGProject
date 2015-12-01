@@ -3,11 +3,10 @@
 #include <string.h> // strlen()
 #include <unistd.h> // gethostname(), write()
 #include <stdlib.h>
-#include "../includes/definitions.h"
-#include "../includes/game.h"
+#include "hangman.h"
 
 char *word[] = {
-# include "../words"
+#include "words"
 		};
 
 extern time_t time();
@@ -145,14 +144,6 @@ void play_hangman(int in, int out, struct Address client, struct GameSession* ga
 	{
 		printf("waiting for guess from the client...\n");
 		recvfrom(in, guess, MAXLEN, 0, (struct sockaddr*) &client.m_sAddress, &iClientSize);
-		//write(1, guess, sizeof(guess));
-		/*
-		while (read(in, guess, MAXLEN) < 0) {
-			if (errno != EINTR)
-				exit(4);
-			printf("re-read the startin \n");
-		}
-		*/
 		good_guess = 0;
 		for (i = 0; i < word_length; i++) {
 			if (guess[0] == whole_word[i]) {
@@ -309,5 +300,14 @@ int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameS
 	return -1;
 }
 
+// Network function wrapper for libsocket
+int ConnectionToServer(char *address, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */)
+{
+	return Connection(address, service, type, protocol);
+}
 
+int ReceiveFromServer(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize)
+{
+	return recvfrom(iListenSocketFileDescriptor, buffer, bufferSize, flags, sender, sendsize);
+}
 
