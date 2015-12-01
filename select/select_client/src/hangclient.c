@@ -6,6 +6,7 @@
 */
 #include "../includes/Definitions.h"
 #include "../../../libsocket/socket.h"
+#include <string.h> // strlen()
 
 int main(int argc, char * argv[]) {
 	int iSocketFileDescriptor;
