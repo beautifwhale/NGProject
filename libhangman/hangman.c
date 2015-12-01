@@ -17,6 +17,45 @@ char *word[] = {
 
 extern time_t time();
 
+// GameSession struct is used to store all of the user information
+// need to keep state for each game. The struct is contained inside of the .c file
+// to prevent it from being modified by users of the API. The implementation details will be
+// hidden once this file is compiled and added to the library.
+struct GameSession{
+
+	// Status of the game session. If this game session has ended
+	// it is removed from server memory
+	char cGameState;
+
+	// Unique identifier for game session associated with a
+	// client
+	char strUsername[255];
+
+	// Sequence number used to keep track of progress
+	// of game session with client
+	int iSequenceNumber;
+
+	// Random word chosen by the server for this game session
+	char* strRandomWord;
+
+	// Length of the random word used to check guess with each char
+	// in the random word char[]
+	int iRandomWordLength;
+
+	// The clients word status so far. As the client guesses correctly the
+	// part word is filled updated.
+	char strPartWord[MAXLEN];
+
+	// Number of lives left
+	int iLives;
+
+	// Id given to game session. This is also the index in the game sessions array.
+	int iSessionId;
+};
+
+// Array of GameSession structs to store user information
+struct GameSession gameSessions[MAX_GAME_SESSIONS];
+
 void InitGameSessions()
 {
 	int i;
@@ -312,5 +351,49 @@ int SendMessage(int socketFileDescriptor, char* buffer, size_t size, int flags)
 int ReceiveMessage(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize)
 {
 	return ReceiveFrom(iListenSocketFileDescriptor, buffer, bufferSize, flags, sender, sendsize);
+}
+
+// Set the server to listen mode for incoming TCP client connections
+void ListenForConnections(int socketFileDescriptor, int maxListenQSize)
+{
+	Listen(socketFileDescriptor, maxListenQSize);
+}
+
+// Set up signal handler when forking processes on the server
+// Fork() will signal the parent process when it has been terminated.
+void CreateSignalHandler()
+{
+	// Signal() in libsocket will create a signal handler for
+	// catching terminated processes and releasing resources
+	// used by them. This will prevent zombie processes.
+	Signal(SIGCHLD, SignalHandler);
+}
+
+int AcceptGameConnections(int iListenSocketFileDescriptor, struct Address *address)
+{
+	int connfd;
+	socklen_t client_len = sizeof(address->m_sAddress);
+
+	// Accept connections from clients
+	connfd = accept(iListenSocketFileDescriptor, (struct sockaddr *) &address->m_sAddress, &client_len);
+
+	if (connfd < 0)
+	{
+		// There was an error (interrupt)
+		if( errno == EINTR )
+		{
+			// Try another Accept() in the event of a system interrupt
+			//continue;
+			perror("AcceptGameConnections() system interrupt");
+			exit(1); // Exit failaure
+		}
+		else
+		{
+			// There was an error other than an interrupt so close the Parent process
+			perror("Accept error");
+			exit(3);
+		}
+	}
+	return connfd;
 }
 

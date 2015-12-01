@@ -1,9 +1,7 @@
-src/udp_server.o: ../src/udp_server.c ../src/../../../libsocket/socket.h \
-  ../src/../../../libhangman/game.h \
-  ../src/../../../libhangman/definitions.h
+src/udp_server.o: ../src/udp_server.c \
+  ../src/../../../libhangman/hangman.h \
+  ../src/../../../libhangman/../libsocket/socket.h
 
-../src/../../../libsocket/socket.h:
+../src/../../../libhangman/hangman.h:
 
-../src/../../../libhangman/game.h:
-
-../src/../../../libhangman/definitions.h:
+../src/../../../libhangman/../libsocket/socket.h:
