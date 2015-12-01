@@ -78,12 +78,19 @@ struct GameSession *FindGameSession(char* username)
 	return NULL;
 }
 
-
 void EndGameSession(struct GameSession *gameSession)
 {
 	strcpy(gameSession->strUsername, "null");
 	gameSession->cGameState = 'U';
 	gameSession->iSequenceNumber = 0;
+}
+
+// Play hangman using libsocket MultiplexIO()
+void PlayHangmanClientTCP(FILE *filePointer, int socketFileDescriptor)
+{
+	// Use libsockets MultiplexIO to communicate over the network
+	// with the server.
+	MultiplexIO(filePointer, socketFileDescriptor);
 }
 
 void PlayHangmanServerTCP(int in, int out)
@@ -145,9 +152,7 @@ void PlayHangmanServerTCP(int in, int out)
 	}
 }
 
-
-// Server UDP function for processing datagrams
-int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameSession* gameSession, char* message) {
+int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct GameSession* gameSession, char* message) {
 
 	char *whole_word;
 	char outbuf[MAXLEN];
@@ -163,7 +168,7 @@ int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameS
 	{
 		sprintf(outbuf, "%s", "Connection failed no empty game slots on the server.");
 		printf("Connection refused\n");
-		sendto(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+		Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 		return -1;
 	}
 
@@ -180,7 +185,7 @@ int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameS
 		gethostname(hostname, MAXLEN);
 		printf("sending confirmation message to the client..\n");
 		sprintf(outbuf, "Playing hangman on host %s with %s:", hostname, gameSession->strUsername);
-		sendto(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+		Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 
 		/* Pick a word at random from the list */
 		printf("picking a random word...\n");
@@ -200,7 +205,7 @@ int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameS
 		printf("sending game status to client..\n");
 		sprintf(outbuf, "%s %d", gameSession->strPartWord, gameSession->iLives);
 		printf("Game status: %s\n", outbuf);
-		sendto(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+		Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 
 
 		// Store information in game session
@@ -246,7 +251,7 @@ int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameS
 			gethostname(hostname, MAXLEN);
 			printf("sending confirmation message to the client..\n");
 			sprintf(outbuf, "Playing hangman on host %s with %s:", hostname, gameSession->strUsername);
-			sendto(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+			Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 		}
 
 
@@ -256,7 +261,7 @@ int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameS
 			gameSession->cGameState = 'W';
 			sprintf(outbuf, "Congratulations you won!\nSecret word: %s\nLives left: %d", gameSession->strPartWord, gameSession->iLives);
 			printf("Client %s Won!\n", gameSession->strUsername);
-			sendto(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+			Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 
 			return -1;
 		}
@@ -264,7 +269,7 @@ int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameS
 			gameSession->cGameState = 'L';
 			sprintf(outbuf, "Sorry you lost\nSecret word: %s", gameSession->strRandomWord);
 			printf("Client %s Lost!\nSending final message: %s\n", gameSession->strUsername, outbuf);
-			sendto(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+			Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 
 			return -1;
 		}
@@ -272,7 +277,7 @@ int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameS
 		printf("sending game state to the client...\n");
 		sprintf(outbuf, "%s %d", gameSession->strPartWord, gameSession->iLives);
 		printf("%s\n", outbuf);
-		sendto(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
+		Send(clientFileDescriptor, outbuf, strlen(outbuf) + 1, 0, (struct sockaddr*) &client.sender, client.sendsize);
 
 		return 0;
 	}
@@ -280,27 +285,21 @@ int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameS
 	return -1;
 }
 
-// Network function wrappers for libsocket
+// Connection to peer using libsocket Connection()
 int InitConnection(char *hostname, char *service, int type /* Client or Server */, int protocol /* UDP or TCP */)
 {
-	// Connection to the server using libsocket Connection()
 	return Connection(hostname, service, type, protocol);
 }
 
+// Send message to peer using libsocket Send()
 int SendMessage(int socketFileDescriptor, char* buffer, size_t size, int flags)
 {
-	return send(socketFileDescriptor, buffer, size, flags);
+	return Send(socketFileDescriptor, buffer, size, flags);
 }
 
+// Receive message from peer using libsocket ReceiveFrom()
 int ReceiveMessage(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize)
 {
-	return recvfrom(iListenSocketFileDescriptor, buffer, bufferSize, flags, sender, sendsize);
-}
-
-void PlayHangmanClientTCP(FILE *filePointer, int socketFileDescriptor)
-{
-	// Use libsockets MultiplexIO to communicate over the network
-	// with the server.
-	MultiplexIO(filePointer, socketFileDescriptor);
+	return ReceiveFrom(iListenSocketFileDescriptor, buffer, bufferSize, flags, sender, sendsize);
 }
 

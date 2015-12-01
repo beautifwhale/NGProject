@@ -2,11 +2,13 @@
 #ifndef INCLUDES_GAME_H_
 #define INCLUDES_GAME_H_
 
+// Game specific data
 #define MAX_LIVES 12
 #define NUM_OF_WORDS (sizeof (word) / sizeof (word [0]))
 #define MAXLEN 80 /* Maximum size in the world of Any string */
 #define MAX_GAME_SESSIONS 10 // Number of game slots available on the server
 
+// Networking dependency using libsocket
 #include "../libsocket/socket.h"
 
 struct GameSession{
@@ -41,14 +43,29 @@ struct GameSession{
 	int iSessionId;
 };
 
+// Array of GameSession structs to store user information
 struct GameSession gameSessions[MAX_GAME_SESSIONS];
 
+// Initialize all game sessions on the server
+// Each game session is initialized to null
 void InitGameSessions();
+
+// Print all game session data
 void PrintActiveGameSessions();
+
+// Print data in gameSession
 void PrintGameSession(struct GameSession *gameSession);
+
+// Find a game session based on the clients username
+// Return a pointer to the sturct
 struct GameSession *FindGameSession(char* username);
-int ProcessRequest(int clientFileDescriptor, struct Address client, struct GameSession* gameSession, char* message);
+
+// Empties data in game session so it can be reused
+// for new games.
 void EndGameSession(struct GameSession *gameSession);
+
+// Network function wrappers for libsocket. Function calls are wrapped to
+// decouple dependency on libsocket from libhangman.
 
 // Libsocket wrapper functions to abstract the library and reduce coupling
 // Wrapper for libsocket Connection() that creates a peer connection based on the
@@ -59,6 +76,9 @@ int SendMessage(int socketFileDescriptor, char* buffer, size_t size, int flags);
 
 // Receive data from the connected server using recvfrom()
 int ReceiveMessage(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags, struct sockaddr *sender, socklen_t *sendsize);
+
+// Server UDP function for processing datagrams
+int PlayHangmanServerUDP(int clientFileDescriptor, struct Address client, struct GameSession* gameSession, char* message);
 
 // PlayHangmanClientTCP is a wrapper for the libsocket function MultiplexIO()
 // Parameters are stdin and the network socket file descriptor

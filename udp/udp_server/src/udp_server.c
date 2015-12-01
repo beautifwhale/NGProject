@@ -14,9 +14,6 @@
 // it is passed to ProcessRequest(), if not a new game session is created and processed. Once the client message is processed
 // control returns to main and the server listens for a new message.
 //
-//#include "../../../libsocket/socket.h"
-//#include "../includes/definitions.h"
-//#include "../includes/game.h"
 #include <string.h>
 #include "../../../libhangman/hangman.h"
 
@@ -81,7 +78,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		// ProcessRequest from client and return to check next message
-		if(ProcessRequest(iListenSocketFileDescriptor, sClientAddress, gameSession, message) == -1)
+		if(PlayHangmanServerUDP(iListenSocketFileDescriptor, sClientAddress, gameSession, message) == -1)
 		{
 			printf("End game session and remove from memory\n");
 			if(gameSession)

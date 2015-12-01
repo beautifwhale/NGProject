@@ -1,6 +1,12 @@
+//
+// socket.c
+//
+// Author David Morton
+//
+// Description: libsocket is a network library used to handle TCP/UDP Client/Server communications
+//
 #include "socket.h"
 #include <string.h> // memcpy()
-#include <signal.h> // SIGCHLD
 #include <sys/wait.h>
 
 int Socket(int family, int type, int protocol)
@@ -282,4 +288,26 @@ void MultiplexIO(FILE* fp, int socketFileDescriptor)
 			Write(socketFileDescriptor, buffer, numberOfBytesReceived);
 		}
 	}
+}
+
+int Send(int socketFileDescriptor, char *message, size_t size, int flags)
+{
+	int numberOfBytesSent = send(socketFileDescriptor, message, size, flags);
+	if(numberOfBytesSent < 0)
+	{
+		perror("Error in Send()");
+		exit(1); // Exit failure
+	}
+	return numberOfBytesSent;
+}
+
+int ReceiveFrom(int socketFileDescriptor, char *message, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize)
+{
+	int numberOfBytesReceived = recvfrom(socketFileDescriptor, message, bufferSize, flags, sender, sendsize);
+	if(numberOfBytesReceived < 0)
+	{
+		perror("Error in ReceiveFrom()");
+		exit(1); // Exit failure
+	}
+	return numberOfBytesReceived;
 }

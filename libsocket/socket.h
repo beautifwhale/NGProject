@@ -1,3 +1,10 @@
+//
+// socket.h
+//
+// Author David Morton
+//
+// Description: libsocket is a network library used to handle TCP/UDP Client/Server communications
+//
 #ifndef INCLUDES_SOCKETS_H_
 #define INCLUDES_SOCKETS_H_
 
@@ -61,5 +68,7 @@ void Signal(int signalNumber, void* signalHandler);
 void Bind(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize);
 void Listen(int socketFileDescriptor, int maxListenQSize);
 void MultiplexIO(FILE* fp, int socketFileDescriptor);
+int Send(int socketFileDescriptor, char *message, size_t size, int flags);
+int ReceiveFrom(int socketFileDescriptor, char *message, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize);
 
 #endif /* INCLUDES_SOCKETS_H_ */
