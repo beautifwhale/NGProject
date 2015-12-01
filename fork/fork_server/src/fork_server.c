@@ -78,6 +78,8 @@ int main(int argc, char* argv[]) {
 			/* ---------------- Play_hangman () ---------------------*/
 			PlayHangmanServerTCP(connfd, connfd);
 
+			printf("Game Over disconnecting...\n");
+
 			/*
 			 *  On return exit to kill the process. The kernel will then
 			 *  send a signal to the parent which is caught by the parents
