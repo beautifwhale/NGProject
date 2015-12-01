@@ -35,9 +35,6 @@ int main(int argc, char* argv[]) {
 
 	// Old version using gethostbyname()
 	//iListenSocketFileDescriptor = Socket(AF_INET, SOCK_STREAM, 0);
-	// TODO Create wrapper for Address() that will allow IPv4 and IPv6 connections.
-	// Use command line input to pass in the hostname and service port number.
-	// AddressIPX("www.google.com", "1071", struct addrinfo *hints, struct addrinfo** result);
 	//Address(AF_INET, (struct Address*) &sAddress, strServerIPAddress, HANGMAN_TCP_PORT);
 	//Bind(iListenSocketFileDescriptor, (struct sockaddr *) &sAddress.m_sAddress, sizeof(sAddress.m_sAddress));
 
