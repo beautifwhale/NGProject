@@ -6,6 +6,7 @@
 */
 #include "../includes/Definitions.h"
 #include "../../../libsocket/socket.h"
+#include <string.h> // strlen()
 
 int main(int argc, char * argv[]) {
 	int iSocketFileDescriptor;
@@ -28,7 +29,7 @@ int main(int argc, char * argv[]) {
 	Write(iSocketFileDescriptor, &buffer, strlen(buffer) +1);
 	printf("Username %s sent to the server\n", buffer);
 
-	MultiplexStdinFileDescriptor(stdin, iSocketFileDescriptor);
+	MultiplexIO(stdin, iSocketFileDescriptor);
 
 	printf("Game over");
 	return 0;
