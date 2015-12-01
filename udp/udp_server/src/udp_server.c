@@ -45,7 +45,15 @@ int main(int argc, char* argv[]) {
 	while(1)
 	{
 		printf("Waiting for message from the client...\n");
+		/*
 		if(recvfrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress.sender, &sClientAddress.sendsize) == 0)
+		{
+			printf("Client has closed connection\n");
+			continue;
+		}
+		*/
+
+		if(ReceiveFromServer(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress.sender, &sClientAddress.sendsize) == 0)
 		{
 			printf("Client has closed connection\n");
 			continue;

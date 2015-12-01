@@ -315,4 +315,8 @@ int ConnectionToServer(char *address, char *service, int type /* Client or Serve
 	return Connection(address, service, type, protocol);
 }
 
+int ReceiveFromServer(int iListenSocketFileDescriptor, char* buffer, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize)
+{
+	return recvfrom(iListenSocketFileDescriptor, buffer, bufferSize, flags, sender, sendsize);
+}
 
