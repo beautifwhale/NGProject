@@ -44,7 +44,7 @@ all: fork_client
 fork_client: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MacOS X C++ Linker'
-	g++ -L"/Users/mortond/Documents/workspace/ngproject/libsocket" -o "fork_client" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L"/Users/mortond/Documents/workspace/ngproject/libhangman" -o "fork_client" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

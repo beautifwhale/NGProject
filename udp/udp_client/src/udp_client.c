@@ -9,8 +9,7 @@
 //
 // Description: The UDP client
 //
-#include "../../../libsocket/socket.h"
-#include "../includes/definitions.h"
+#include "../../../libhangman/hangman.h"
 #include <string.h>
 
 int main(int argc, char * argv[])
@@ -18,41 +17,45 @@ int main(int argc, char * argv[])
 	int iSocketFileDescriptor;
 
 	char* strServerIPAddress;
+	char* strSerivceName;
+	char* strUsername;
+
+	char buffer[MAX_BUF_SIZE];
+	char userInput[MAX_BUF_SIZE];
 
 	struct Address sServerAddress;
 	sServerAddress.sendsize = sizeof(sServerAddress.sender);
 	bzero(&sServerAddress.sender, sizeof(sServerAddress.sender));
 
- 	if (argc != 3)
+ 	if (argc != 4)
   	{
-		printf("usage:  udpclient <IP address> <userName>\n");
+		printf("usage: clientUDP <IP address> <service name/port number> <userName>\n");
 		exit(1);
    	}
 
+ 	// Get server hostname, service name, and username from the user
 	strServerIPAddress = argv[1];
-
-	char* strUsername;
-	strUsername = argv[2];
-
-	char buffer[MAX_BUF_SIZE];
-	char userInput[MAX_BUF_SIZE];
+	strSerivceName = argv[2];
+	strUsername = argv[3];
 
 	// Connection to server is active initially.
 	int iConnectionSuccess = 1;
 
 	// Create a connection to the server using the servers IPv4 or IPv6 address, and port number.
 	// The connection type is TYPE_CLIENT to specify client application
-	iSocketFileDescriptor = Connection(strServerIPAddress, "1071", TYPE_CLIENT, SOCK_DGRAM);
+	iSocketFileDescriptor = InitConnection(strServerIPAddress, strSerivceName, TYPE_CLIENT, SOCK_DGRAM);
 
 	// Send Username to server and add '_' delimiter
 	sprintf(buffer, "%s_ ", strUsername);
-	send(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
+
+	SendMessage(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
 	printf("Username %s sent to the server\n", strUsername);
 
 	// Receive message from server, this may signify a failure or
 	// a successful connection.
 	printf("Waiting for confirmation message from the server...\n");
-	recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
+
+	ReceiveMessage(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
 	printf("%s\n", buffer);
 
 	// If the server is full the connection is refused.
@@ -68,7 +71,8 @@ int main(int argc, char * argv[])
 		iConnectionSuccess = 1; // Connection accepted
 
 		printf("Waiting for game session status...\n");
-		recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
+
+		ReceiveMessage(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
 		printf("%s\n", buffer);
 	}
 
@@ -81,11 +85,12 @@ int main(int argc, char * argv[])
 		fgets(userInput, sizeof(userInput), stdin);
 		sprintf(buffer, "%s_%s", strUsername, userInput);
 		printf("Sending: %s", buffer);
-		send(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
+		SendMessage(iSocketFileDescriptor, buffer, strlen(buffer) + 1, 0);
 
 		// Receive reply from server
 		printf("Waiting for reply from the server...\n");
-		recvfrom(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
+
+		ReceiveMessage(iSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sServerAddress.sender, &sServerAddress.sendsize);
 		printf("%s\n", buffer);
 
 		// If the servers reply contains 'won' or 'lost' break and close the socket.

@@ -206,5 +206,6 @@ struct GameSession *BuildGame(char* username, int fd) {
 		}
 
 	}
+	return NULL;
 }
 

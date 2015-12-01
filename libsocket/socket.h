@@ -1,3 +1,10 @@
+//
+// socket.h
+//
+// Author David Morton
+//
+// Description: libsocket is a network library used to handle TCP/UDP Client/Server communications
+//
 #ifndef INCLUDES_SOCKETS_H_
 #define INCLUDES_SOCKETS_H_
 
@@ -8,6 +15,8 @@
 #include <netdb.h>
 #include <stdlib.h> // exit(),
 #include <unistd.h> // read(), write(), fork()
+#include <signal.h>
+#include <errno.h>
 
 // Max buffer size used for the read buffer of file descriptors
 #define MAX_BUF_SIZE 4096
@@ -59,5 +68,8 @@ void Signal(int signalNumber, void* signalHandler);
 void Bind(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize);
 void Listen(int socketFileDescriptor, int maxListenQSize);
 void MultiplexIO(FILE* fp, int socketFileDescriptor);
+int Send(int socketFileDescriptor, char *message, size_t size, int flags);
+int SendTo(int socketFileDescriptor, char *message, size_t size, int flags, struct sockaddr *sender, socklen_t sendsize);
+int ReceiveFrom(int socketFileDescriptor, char *message, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize);
 
 #endif /* INCLUDES_SOCKETS_H_ */

@@ -8,20 +8,18 @@
 //
 //
 // Description: The server in the Hangman game will listen for messages for clients
-// on port 1071. The port number can be received on the command line but is hardcoded in this
-// implementation. When a message is received the clients username and message are parsed from the
+// on port 1071. The port number is received from user input on the command line when
+// running the server. When a message is received the clients username and message are parsed from the
 // packet string. The username is used as a search key in the array of game session structs, if one is found
 // it is passed to ProcessRequest(), if not a new game session is created and processed. Once the client message is processed
 // control returns to main and the server listens for a new message.
 //
-#include "../../../libsocket/socket.h"
-#include "../includes/definitions.h"
-#include "../includes/game.h"
 #include <string.h>
+#include "../../../libhangman/hangman.h"
 
 int main(int argc, char* argv[]) {
-	int iListenSocketFileDescriptor;
 
+	int iListenSocketFileDescriptor;
 	// Create Address struct to store client information
 	struct Address sClientAddress;
 	sClientAddress.sendsize = sizeof(sClientAddress.sender);
@@ -39,12 +37,20 @@ int main(int argc, char* argv[]) {
 	// Create a connection; Using NULL address to listen for all incoming
 	// connections to server. Server port number 1071 and type TYPE_SERVER
 	// Server will listen on port 1071 for any incoming connections
-	iListenSocketFileDescriptor = Connection(NULL, "1071", TYPE_SERVER, SOCK_DGRAM);
+	iListenSocketFileDescriptor = InitConnection(NULL, "1071", TYPE_SERVER, SOCK_DGRAM);
 
 	while(1)
 	{
 		printf("Waiting for message from the client...\n");
+		/*
 		if(recvfrom(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress.sender, &sClientAddress.sendsize) == 0)
+		{
+			printf("Client has closed connection\n");
+			continue;
+		}
+		*/
+
+		if(ReceiveMessage(iListenSocketFileDescriptor, buffer, MAX_BUF_SIZE, 0, (struct sockaddr*) &sClientAddress.sender, &sClientAddress.sendsize) == 0)
 		{
 			printf("Client has closed connection\n");
 			continue;
@@ -72,7 +78,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		// ProcessRequest from client and return to check next message
-		if(ProcessRequest(iListenSocketFileDescriptor, sClientAddress, gameSession, message) == -1)
+		if(PlayHangmanServerUDP(iListenSocketFileDescriptor, sClientAddress, gameSession, message) == -1)
 		{
 			printf("End game session and remove from memory\n");
 			if(gameSession)

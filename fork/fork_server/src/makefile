@@ -1,7 +1,7 @@
 GCC=gcc
-LIBS=-lsocket
+LIBS=-lhangman -lsocket
 LIB_PATH=-L"/usr/lib"
-SOURCE_FILES=fork_server.c game.c
+SOURCE_FILES=fork_server.c
 
 all: server
 

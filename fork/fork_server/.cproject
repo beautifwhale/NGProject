@@ -38,9 +38,11 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.293244774" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
 								<option id="gnu.cpp.link.option.paths.759775441" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libsocket_ngproject}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/libhangman}&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.1995787256" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="socket"/>
+									<listOptionValue builtIn="false" value="hangman"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1560011641" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
