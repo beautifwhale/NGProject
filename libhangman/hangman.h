@@ -3,7 +3,9 @@
 //
 // Author David Morton
 //
-// Description: This is the libhangman API used to create networked hangman games.
+// Description: libhangman API used to create networked hangman games using TCP/UDP
+//
+// Dependencies: libsocket
 //
 #ifndef INCLUDES_GAME_H_
 #define INCLUDES_GAME_H_
@@ -73,7 +75,8 @@ void ListenForConnections(int socketFileDescriptor, int maxListenQSize);
 // used by them. This will prevent zombie processes.
 void CreateSignalHandler();
 
-
+// Accept all incoming TCP connections and return a file descriptor
+// used to communicate with the client.
 int AcceptGameConnection(int iListenSocketFileDescriptor, struct Address *address);
 
 

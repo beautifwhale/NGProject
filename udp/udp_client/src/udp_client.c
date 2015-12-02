@@ -5,9 +5,13 @@
 //			Kevin Byrne
 // 			add names here...
 //
+// Description: The UDP client will take the username, secret password, hostname, and
+// service port number from the command line. It will then create a connection with the server
+// by sending the clients username and password for the game session. If the server replies with a
+// success message the client will take user input and send it to the server until the player has won or
+// lost the game. Games can be resumed if closed, server holds state on game session.
 //
-//
-// Description: The UDP client
+// Dependencies: libhangman
 //
 #include "../../../libhangman/hangman.h"
 #include <string.h>
@@ -26,6 +30,8 @@ int main(int argc, char * argv[])
 	char buffer[MAX_BUF_SIZE];
 	char userInput[MAX_BUF_SIZE];
 
+	// Address structure to hold information about
+	// addressing type and storage. See libsocket
 	struct Address sServerAddress;
 	sServerAddress.sendsize = sizeof(sServerAddress.sender);
 	bzero(&sServerAddress.sender, sizeof(sServerAddress.sender));
@@ -36,7 +42,7 @@ int main(int argc, char * argv[])
 		exit(1);
    	}
 
- 	// Get server hostname, service name, and username from the user
+ 	// Get server hostname, service name, username, and password from the user
 	strServerIPAddress = argv[1];
 	strSerivceName = argv[2];
 	strUsername = argv[3];

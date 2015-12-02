@@ -1,7 +1,7 @@
 GCC=gcc
 LIBS=-lsocket
 LIB_PATH=-L"/usr/lib"
-SOURCE_FILES=hangserver_iter.c game.c
+SOURCE_FILES=select_server.c game.c
 
 all: server
 

@@ -1,12 +1,14 @@
-/* Network server_addr for hangman game */
-/* File: hangserver_addr.c */
-
-/*
- * 	Select working 
- *	
- *
- */
-
+// select_server.c
+//
+// Year 4 Networked Games Assignment 2015
+// Team:	David Morton
+//			Kevin Byrne
+// 			add names here...
+//
+// Description:
+//
+// Dependencies: libhangman, libsocket
+//
 #include "../includes/Game.h"
 #include "../includes/Definitions.h"
 #include "../../../libsocket/socket.h"

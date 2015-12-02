@@ -9,10 +9,12 @@
 //
 // Description: The server in the Hangman game will listen for messages for clients
 // on port 1071. The port number is received from user input on the command line when
-// running the server. When a message is received the clients username and message are parsed from the
+// running the server. When a message is received the clients username, password, and message are parsed from the
 // packet string. The username is used as a search key in the array of game session structs, if one is found
-// it is passed to ProcessRequest(), if not a new game session is created and processed. Once the client message is processed
+// it is passed to ProcessRequest(), if not, a new game session is created and processed. Once the client message is processed
 // control returns to main and the server listens for a new message.
+//
+// Dependencies: libhangman
 //
 #include <string.h>
 #include "../../../libhangman/hangman.h"
