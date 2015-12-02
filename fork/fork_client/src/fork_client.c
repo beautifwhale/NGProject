@@ -6,7 +6,6 @@
 //			Kevin Byrne
 // 			add names here...
 //
-// 
 //
 // Description: The fork client uses the libsocket library to communicate with the 
 // server running the Hangman game. The client will initiate a connection with the server using

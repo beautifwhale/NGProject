@@ -7,7 +7,7 @@
 //
 #include "socket.h"
 #include <string.h> // memcpy()
-#include <sys/wait.h>
+#include <sys/wait.h> // waitpid()
 
 int Socket(int family, int type, int protocol)
 {

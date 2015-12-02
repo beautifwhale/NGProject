@@ -1,9 +1,14 @@
-/*
- * Hangclient.c - Client for hangman server.
- *
- * @author	David Morton, Kevin Byrne, Derek O Brien
- * @date	4.10.2015
-*/
+// select_client.c
+//
+// Year 4 Networked Games Assignment 2015
+// Team:	David Morton
+//			Kevin Byrne
+// 			add names here...
+//
+// Description:
+//
+// Dependencies: libhangman, libsocket
+//
 #include "../includes/Definitions.h"
 #include "../../../libsocket/socket.h"
 #include <string.h> // strlen()

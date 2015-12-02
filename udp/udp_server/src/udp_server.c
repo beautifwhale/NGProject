@@ -14,6 +14,8 @@
 // it is passed to ProcessRequest(), if not, a new game session is created and processed. Once the client message is processed
 // control returns to main and the server listens for a new message.
 //
+// Dependencies: libhangman
+//
 #include <string.h>
 #include "../../../libhangman/hangman.h"
 

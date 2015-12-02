@@ -7,7 +7,8 @@
 //
 // Description:
 //
-
+// Dependencies: libhangman, libsocket
+//
 #include "../includes/Game.h"
 #include "../includes/Definitions.h"
 #include "../../../libsocket/socket.h"

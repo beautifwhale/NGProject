@@ -11,6 +11,8 @@
 // success message the client will take user input and send it to the server until the player has won or
 // lost the game. Games can be resumed if closed, server holds state on game session.
 //
+// Dependencies: libhangman
+//
 #include "../../../libhangman/hangman.h"
 #include <string.h>
 

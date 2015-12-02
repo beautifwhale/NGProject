@@ -3,7 +3,7 @@
 //
 // Author David Morton
 //
-// Description: libsocket is a network library used to handle TCP/UDP Client/Server communications
+// Description: libsocket is a network library used to handle TCP/UDP Client/Server communications.
 //
 #ifndef INCLUDES_SOCKETS_H_
 #define INCLUDES_SOCKETS_H_

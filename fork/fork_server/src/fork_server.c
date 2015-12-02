@@ -5,7 +5,6 @@
 // Team:	David Morton
 //			Kevin Byrne
 // 			add names here...
-//
 // 
 //
 // Description: The server in the Hangman game will create a socket, bind to a port, and will then 

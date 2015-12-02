@@ -3,7 +3,10 @@
 //
 // Author David Morton
 //
-// Description:
+// Description: libhangman implementation details. Will be contained inside .so/.dll file when
+// compiled. Provides api to create networked hangman games.
+//
+// Dependencies: libsocket
 //
 #include <syslog.h> // syslog()
 #include <string.h> // strlen()
