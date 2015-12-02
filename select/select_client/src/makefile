@@ -1,7 +1,7 @@
 GCC=gcc
 LIBS=-lsocket
 LIB_PATH=-L"/usr/lib"
-SOURCE_FILES=hangclient.c
+SOURCE_FILES=select_client.c
 
 all: client
 

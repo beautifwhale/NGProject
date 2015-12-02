@@ -1,11 +1,12 @@
-/* Network server_addr for hangman game */
-/* File: hangserver_addr.c */
-
-/*
- * 	Select working 
- *	
- *
- */
+// select_server.c
+//
+// Year 4 Networked Games Assignment 2015
+// Team:	David Morton
+//			Kevin Byrne
+// 			add names here...
+//
+// Description:
+//
 
 #include "../includes/Game.h"
 #include "../includes/Definitions.h"

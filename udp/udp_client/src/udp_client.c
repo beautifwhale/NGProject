@@ -5,9 +5,11 @@
 //			Kevin Byrne
 // 			add names here...
 //
-//
-//
-// Description: The UDP client
+// Description: The UDP client will take the username, secret password, hostname, and
+// service port number from the command line. It will then create a connection with the server
+// by sending the clients username and password for the game session. If the server replies with a
+// success message the client will take user input and send it to the server until the player has won or
+// lost.
 //
 #include "../../../libhangman/hangman.h"
 #include <string.h>
