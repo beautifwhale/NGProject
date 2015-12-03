@@ -17,7 +17,12 @@ ExternalProject_Add(libhangman
 #include_directories(${libhangman_SOURCE_DIR}/include)
 
 # Set project libs for linker
-set(PROJECT_LINK_LIBS libhangman.dylib)
+# Don't mistake osx for unix
+if(UNIX AND NOT APPLE)
+  set(PROJECT_LINK_LIBS libhangman.so)
+else()
+  set(PROJECT_LINK_LIBS libhangman.dylib)
+endif()
 link_directories(${libhangman_SOURCE_DIR}/lib)
  
 # Set sources for target
