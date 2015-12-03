@@ -26,5 +26,5 @@ Hangman is a networked game using a BSD Sockets to communicate between client an
 - libhangman  https://github.com/damorton/libhangman.git
 - libsocket   https://github.com/damorton/libsocket.git
 
-Libraries used in the project are built and installing using cmake.
+Libraries used in the project are built and installed using cmake.
 
