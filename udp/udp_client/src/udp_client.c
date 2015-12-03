@@ -13,7 +13,8 @@
 //
 // Dependencies: libhangman
 //
-#include "../../../libhangman/hangman.h"
+//#include "hangman.h" // Will also work because cmake includes API header files
+#include "../external/libhangman/include/hangman.h"
 #include <string.h>
 
 int main(int argc, char * argv[])
