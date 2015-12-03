@@ -3,9 +3,16 @@
 // Year 4 Networked Games Assignment 2015
 // Team:	David Morton
 //			Kevin Byrne
+//			Derek O Brien
 // 			add names here...
 //
-// Description:
+// Description: The server in the Hangman game will create a socket, bind to a port, and will then 
+// listen for incoming connections from clients. The Select function will then listen for both 
+// new incomming connections and data coming  on connections that are all ready made. 
+// For each new connection a game session is built for the user and it is then stored in an array.
+// once the user makes a guess  the select function will chack to see which socket descriptor it is 
+// from and this descriptor is then used to find the game session belonging to user
+// THis session is then used to play the game.
 //
 // Dependencies: libhangman, libsocket
 //
@@ -102,15 +109,15 @@ int main(int argc, char* argv[]) {
 					(struct sockaddr *) &sClientAddress.m_sAddress,
 					(socklen_t*) &addrlen);
 
-			/*Get Username and print*/
+			//Get Username and print
 			Read(new_socket, userBuffer, sizeof(userBuffer));
 			username = (char*) userBuffer;
 			printf("Received username: %s\n", (char *) username);
 
-			//inform user of socket number - used in send and receive commands
+			//inform user of socket number - used in read and write
 			printf("New connection on socket: %d \n", new_socket);
 
-			/*Write Welcome Message*/
+			//Write Welcome Message
 			write(new_socket, message, strlen(message));
 
 			//add new socket to array of sockets
