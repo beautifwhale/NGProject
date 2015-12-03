@@ -22,7 +22,8 @@ if(UNIX AND NOT APPLE)
   set(PROJECT_LINK_LIBS libhangman.so)
 else()
   set(PROJECT_LINK_LIBS libhangman.dylib)
-endif()link_directories(${libhangman_SOURCE_DIR}/lib)
+endif()
+link_directories(${libhangman_SOURCE_DIR}/lib)
  
 # Set sources for target
 set(SOURCES src/udp_server.c)
