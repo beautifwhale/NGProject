@@ -12,4 +12,4 @@ Conatins 3 versions of the hangman game
     - udp client
     - udp server
 
-You must navigate to the root of each project folder and follow the instructions in the README file. 
+You must navigate to the root of each project folder and follow the instructions in the README file to build and install each one.
