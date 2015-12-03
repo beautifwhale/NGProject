@@ -17,7 +17,7 @@
 // described in the game.c file. Once the game has ended the PlayHangmanServerTCP() function returns and the process
 // will exit with code 0 meaning 'Success'
 //
-#include "../../../libhangman/hangman.h"
+#include "../external/libhangman/include/hangman.h"
 
 int main(int argc, char* argv[]) {
 

@@ -15,7 +15,7 @@
 // call to PlayHangmanClientTCP(). Implementations for each function call in the client
 // can be found in the libsocket socket.c file.
 //
-#include "../../../libhangman/hangman.h"
+#include "../external/libhangman/include/hangman.h"
 
 int main(int argc, char * argv[]) {
 	int iSocketFileDescriptor;
