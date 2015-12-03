@@ -18,7 +18,7 @@
 // Dependencies: libhangman
 //
 #include <string.h>
-#include "../../../libhangman/hangman.h"
+#include "../external/libhangman/include/hangman.h"
 
 int main(int argc, char* argv[]) {
 
