@@ -16,5 +16,5 @@ $ make
 - libhangman  https://github.com/damorton/libhangman.git
 - libsocket   https://github.com/damorton/libsocket.git
 
-Libraries used in the project are built and installing using cmake.
+Libraries used in the project are built and installed using cmake.
 
