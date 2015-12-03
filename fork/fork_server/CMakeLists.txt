@@ -19,9 +19,9 @@ ExternalProject_Add(libhangman
 # Set project libs for linker
 # Don't mistake osx for unix
 if(UNIX AND NOT APPLE)
-  set(PROJECT_LINK_LIBS libsocket.so)
+  set(PROJECT_LINK_LIBS libhangman.so)
 else()
-  set(PROJECT_LINK_LIBS libsocket.dylib)
+  set(PROJECT_LINK_LIBS libhangman.dylib)
 endif()
 link_directories(${libhangman_SOURCE_DIR}/lib)
  
