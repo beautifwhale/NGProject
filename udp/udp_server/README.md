@@ -1,5 +1,7 @@
 # Hangman UDP Server
 
+Hangman is a networked game using a BSD Sockets to communicate between client and server. It is built using libhangman which uses libsocket for network communications.
+
 ## Build
 
 ```
@@ -8,10 +10,11 @@ $ cd build
 $ cmake ..
 $ make
 ```
+
 ## Dependencies
 
-The Hangman game is built using the libhangman library available at: 
+- libhangman  https://github.com/damorton/libhangman.git
+- libsocket   https://github.com/damorton/libsocket.git
 
-https://github.com/damorton/libhangman.git
-
+Libraries used in the project are built and installing using cmake.
 
