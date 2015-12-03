@@ -12,6 +12,8 @@ NGProject (Networked Games Project) conatins 3 versions of a networked Hangman g
     - udp client
     - udp server
 
+## Build 
+
 You must navigate to the root of each project folder and follow the instructions in the README file to build and install each one.
 
 
