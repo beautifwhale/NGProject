@@ -58,18 +58,43 @@ void Connect(int socketFileDescriptor, const struct sockaddr* socketAddress, soc
 // returning from the function. Select will multiplex I/O from many s
 int Select(int maxFileDescriptorsPlus1, fd_set *readFileDescriptorSet, fd_set *writeFileDescriptorSet, fd_set *exceptFileDescriptorSet, struct timeval *timeout);
 
-// Read
+// Wrapper function to handle errors from BSD Sockets API. Read data
+// from the file descriptor buffer
 ssize_t Read(int fileDescriptor, void *buffer, size_t numberOfBytes);
+
+// Wrapper function to handle errors from BSD Sockets API. Write data 
+// in buffer to the file descriptor
 void Write(int fileDescriptor, void *buffer, size_t numberOfBytes);
+
+// Wrapper function to handle errors from BSD Sockets API. Shutdown the socket
 void Shutdown(int fileDescriptor, int shutdownOption);
+
+// Get the max of two integers
 int Max(int x, int y);
+
+// Wrapper function to handle errors from BSD Sockets API. Signal
+// handler function used with signal() function
 void SignalHandler(int signalNumber);
+
+// Wrapper function to handle errors from BSD Sockets API. Pass signalHandler function
 void Signal(int signalNumber, void* signalHandler);
+
+// Wrapper function to handle errors from BSD Sockets API. Bind will bind the server to 
+// a port and address using data in socketAddress
 void Bind(int socketFileDescriptor, const struct sockaddr* socketAddress, socklen_t socketSize);
+
+// Wrapper function to handle errors from BSD Sockets API. Listen will set the 
+// server to listen for incoming client connections
 void Listen(int socketFileDescriptor, int maxListenQSize);
+
+// MultiplexIO from a FILE stdin/stdout and a file descriptor
 void MultiplexIO(FILE* fp, int socketFileDescriptor);
+
+// Send data in the message buffer to the connected peer
 int Send(int socketFileDescriptor, char *message, size_t size, int flags);
 int SendTo(int socketFileDescriptor, char *message, size_t size, int flags, struct sockaddr *sender, socklen_t sendsize);
+
+// Receive data from a peer and store the data in the message buffer
 int ReceiveFrom(int socketFileDescriptor, char *message, int bufferSize, int flags , struct sockaddr *sender, socklen_t *sendsize);
 
 #endif /* INCLUDES_SOCKETS_H_ */
