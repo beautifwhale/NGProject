@@ -1,4 +1,25 @@
-# Installing Dependencies
+# NGProject
+
+NGProject (Networked Games Project) conatins 3 versions of a networked Hangman game. It demonstrates using the libhangman game library to create games using different network protocols and designs. Libhangman uses libsocket for network communications and is installed alongside libhangman during the build stage.
+
+- fork
+  - fork client
+  - fork server
+- select
+  - select client
+  - select server
+- udp
+  - udp client
+  - udp server
+
+## Hangman
+
+Hangman is a networked game using a BSD Sockets to communicate between client and server. It is built using libhangman which uses libsocket for network communications.
+
+## Building Dependencies
+
+libhangman https://github.com/damorton/libhangman.git
+libsocket https://github.com/damorton/libsocket.git
 
 ## Linux
 
