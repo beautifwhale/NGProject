@@ -18,8 +18,8 @@ Hangman is a networked game using a BSD Sockets to communicate between client an
 
 ## Building Dependencies
 
-libhangman https://github.com/damorton/libhangman.git
-libsocket https://github.com/damorton/libsocket.git
+- libhangman https://github.com/damorton/libhangman.git
+- libsocket https://github.com/damorton/libsocket.git
 
 ## Linux
 
