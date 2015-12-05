@@ -12,7 +12,7 @@ $ ./install.sh
 $ ./installOSX.sh
 ```
 
-This will build the `libsocket` and `libhangman` libaraies used in the project. All of the project binaries will also be built and linked against libsocket and libhangman. The libs will be installed to the `/usr/lib` folder on the system.
+This will build the `libsocket` and `libhangman` libraries used in the project. All of the project binaries will also be built and linked against libsocket and libhangman. The libs will be installed to the `/usr/lib` folder on the system.
 
 ## Running the project
 
