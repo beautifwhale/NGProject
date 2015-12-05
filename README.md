@@ -1,26 +1,24 @@
 # Installing Dependencies
 
-## Linux/OSX
+## Linux
 
-Run install.sh/installOSX.sh
+```
+$ ./install.sh
+```
 
-This will build the libsocket library and install it in the /usr/lib folder on the system. The fork client and server, select client and server, and udp client and server will also build. 
+## OSX
+
+```
+$ ./installOSX.sh
+```
+
+This will build the `libsocket` and `libhangman` libaraies used in the project. All of the project binaries will also be built and linked against libsocket and libhangman. The libs will be installed to the `/usr/lib` folder on the system.
 
 ## Running the project
 
-Navigate to the src/ folder. Run server first and then client.
+For each version of Hangman game navigate to the `src/` folder of the server first and run using `./`. Then navigate to the corresponding client `src/` directory and run using `./`. Clients may need additional arguments such as `hostname` and/or `service-name`.
 
 ```
-cd ngproject/udp/udp_client/src/
-./clientUDP <server-ipaddress> <username>
+$cd ngproject/udp/udp_server/src/
+$./serverUDP
 ```
-
-
-# Testing (Project Management)
-
-[![Stories in Ready](https://badge.waffle.io/damorton/ngproject.png?label=ready&title=Ready)](https://waffle.io/damorton/ngproject)
-## Kanban Board (Testing)
-https://waffle.io/damorton/ngproject/join
-
-## Trello Integration for Project
-// Add link to Trello project
